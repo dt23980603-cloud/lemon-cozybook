@@ -668,6 +668,137 @@
             background-color: #333;
             color: #fff;
         }
+
+        .search-selected-member {
+            margin: 0 0 12px;
+            padding: 9px 12px;
+            border: 1px solid #eadfe1;
+            border-radius: 10px;
+            background: #fff8f8;
+            color: #6e5f61;
+            font-size: 0.86rem;
+        }
+
+        .search-selected-member b {
+            color: #4f3f42;
+        }
+
+        .btn-search-check {
+            flex: 0 0 auto;
+            min-width: 64px;
+            padding: 7px 10px;
+            border: 1px solid #d7bfc3;
+            border-radius: 8px;
+            background: #fff0f1;
+            color: #5e4448;
+            font-family: inherit;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .btn-search-check:hover {
+            background: #ffe3e6;
+            border-color: #cfaeb4;
+        }
+
+        .btn-search-check.checked {
+            background: #f4f0e5;
+            border-color: #c8b990;
+            color: #5e5439;
+        }
+
+        .btn-search-check.partial {
+            background: #fff7dc;
+            border-color: #d9bf70;
+            color: #6a571e;
+        }
+
+        .btn-search-open {
+            flex-shrink: 0;
+            padding: 4px 9px;
+            background-color: #fff0f0;
+            border: 1px solid #666;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-search-open:hover {
+            background-color: #fae0e0;
+        }
+
+        .flower-detail-card {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 520px;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .flower-detail-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .flower-detail-image {
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .flower-detail-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .flower-detail-name {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .flower-detail-row {
+            display: flex;
+            gap: 10px;
+            padding: 7px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .flower-detail-label {
+            width: 80px;
+            flex-shrink: 0;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .flower-detail-source {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        @media (max-width: 560px) {
+            .flower-detail-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flower-detail-info {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -692,7 +823,7 @@
             <div class="manage-title">
                 📖 길드원 목록 관리
                 <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
-                    (닉네임 태그 클릭: 필터링 / 🔄버튼: 해당 길드원 체크 표시 초기화)
+                    (닉네임 태그 클릭: 다중 필터링 / 🔄버튼: 해당 길드원 체크 표시 초기화)
                 </span>
             </div>
 
@@ -961,6 +1092,10 @@
 
             </div>
 
+            <div class="search-selected-member" id="flowerSearchSelectedMember">
+                현재 선택: <b>길드원 미선택</b>
+            </div>
+
             <div class="flower-search-input-row">
 
                 <input
@@ -986,6 +1121,73 @@
 
                 <div class="search-guide">
                     검색할 꽃 이름을 입력해 주세요.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 꽃 상세 정보 모달 (붉은 장미 테스트) -->
+    <div class="modal-overlay" id="flowerDetailModal" style="z-index: 1200;">
+
+        <div class="flower-detail-card">
+
+            <div class="modal-header">
+
+                <div class="modal-title">🌹 꽃 정보</div>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    onclick="closeFlowerDetail()"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="flower-detail-layout">
+
+                <img
+                    src="images/flowers/F0260.webp"
+                    alt="붉은 장미"
+                    class="flower-detail-image"
+                >
+
+                <div class="flower-detail-info">
+                    <div class="flower-detail-name">붉은 장미</div>
+
+                    <div class="flower-detail-row">
+                        <span class="flower-detail-label">등급</span>
+                        <span>N</span>
+                    </div>
+
+                    <div class="flower-detail-row">
+                        <span class="flower-detail-label">길드전</span>
+                        <span>9점</span>
+                    </div>
+
+                    <div class="flower-detail-row">
+                        <span class="flower-detail-label">획득</span>
+                        <span>기본 획득 · 획득 가능</span>
+                    </div>
+
+                    <div class="flower-detail-row">
+                        <span class="flower-detail-label">도감 조건</span>
+                        <span>레벨 01 해제</span>
+                    </div>
+
+                    <div class="flower-detail-row">
+                        <span class="flower-detail-label">비고</span>
+                        <span>🎫 무과금 가능</span>
+                    </div>
+
+                    <div class="flower-detail-source">
+                        이미지·꽃 정보 참고: 코지 꽃수첩 (thecozybook.pages.dev)
+                    </div>
                 </div>
 
             </div>
@@ -1460,7 +1662,7 @@
             || {};
 
 
-        let selectedMemberId = null;
+        let selectedMemberIds = new Set();
 
 
         window.onload = function () {
@@ -1603,13 +1805,7 @@
                     );
 
 
-                if (
-                    selectedMemberId === id
-                ) {
-
-                    selectedMemberId = null;
-
-                }
+                selectedMemberIds.delete(id);
 
 
                 for (let key in checks) {
@@ -1723,13 +1919,24 @@
 
         function toggleFilterMember(id) {
 
-            selectedMemberId =
-                selectedMemberId === id
-                    ? null
-                    : id;
-
+            if (selectedMemberIds.has(id)) {
+                selectedMemberIds.delete(id);
+            } else {
+                selectedMemberIds.add(id);
+            }
 
             renderAll();
+            updateFlowerSearchSelectedMember();
+
+            const searchModal =
+                document.getElementById('flowerSearchModal');
+
+            if (
+                searchModal &&
+                searchModal.classList.contains('active')
+            ) {
+                searchFlowers();
+            }
 
         }
 
@@ -1902,7 +2109,7 @@
                 .forEach(m => {
 
                     const isSelected =
-                        selectedMemberId === m.id;
+                        selectedMemberIds.has(m.id);
 
 
                     const tag =
@@ -1985,14 +2192,10 @@
 
 
             const activeMembers =
-                selectedMemberId
-
+                selectedMemberIds.size > 0
                     ? sortedMembers.filter(
-                        m =>
-                            m.id ===
-                            selectedMemberId
+                        m => selectedMemberIds.has(m.id)
                     )
-
                     : sortedMembers;
 
 
@@ -2002,7 +2205,7 @@
 
             table.classList.toggle(
                 'filtered',
-                !!selectedMemberId
+                selectedMemberIds.size > 0
             );
 
 
@@ -2147,6 +2350,109 @@
         ============================== */
 
 
+        function getSelectedMembers() {
+
+            const sortedMembers = getSortedMembers(members);
+
+            return sortedMembers.filter(
+                member => selectedMemberIds.has(member.id)
+            );
+
+        }
+
+
+        function updateFlowerSearchSelectedMember() {
+
+            const display =
+                document.getElementById(
+                    'flowerSearchSelectedMember'
+                );
+
+            if (!display) {
+                return;
+            }
+
+            const selectedMembers =
+                getSelectedMembers();
+
+            if (selectedMembers.length > 0) {
+                display.innerHTML =
+                    `현재 선택 (${selectedMembers.length}명): <b>${selectedMembers.map(member => escapeHtml(member.name)).join(', ')}</b>`;
+            } else {
+                display.innerHTML =
+                    '현재 선택: <b>길드원 미선택</b>';
+            }
+
+        }
+
+
+        function getSearchCheckState(grade, flowerIdx) {
+
+            const selectedMembers =
+                getSelectedMembers();
+
+            if (selectedMembers.length === 0) {
+                return 'none';
+            }
+
+            const checkedCount = selectedMembers.filter(member => {
+                const checkKey = `${grade}_${flowerIdx}_${member.id}`;
+                return Boolean(checks[checkKey]);
+            }).length;
+
+            if (checkedCount === 0) {
+                return 'none';
+            }
+
+            if (checkedCount === selectedMembers.length) {
+                return 'all';
+            }
+
+            return 'partial';
+
+        }
+
+
+        function toggleFlowerCheckFromSearch(
+            grade,
+            flowerIdx
+        ) {
+
+            const selectedMembers =
+                getSelectedMembers();
+
+            if (selectedMembers.length === 0) {
+                alert(
+                    '먼저 목록 관리에서 길드원을 선택해주세요.'
+                );
+                return;
+            }
+
+            const currentState =
+                getSearchCheckState(grade, flowerIdx);
+
+            const shouldCheck =
+                currentState !== 'all';
+
+            selectedMembers.forEach(member => {
+                const checkKey =
+                    `${grade}_${flowerIdx}_${member.id}`;
+
+                if (shouldCheck) {
+                    checks[checkKey] = true;
+                } else {
+                    delete checks[checkKey];
+                }
+            });
+
+            saveData();
+            renderAll();
+            updateFlowerSearchSelectedMember();
+            searchFlowers();
+
+        }
+
+
         function openFlowerSearch() {
 
             const modal =
@@ -2164,6 +2470,9 @@
             modal.classList.add(
                 'active'
             );
+
+            updateFlowerSearchSelectedMember();
+            searchFlowers();
 
 
             setTimeout(
@@ -2326,6 +2635,46 @@
                         </div>
 
 
+                        ${(() => {
+                            const checkState =
+                                getSearchCheckState(item.grade, item.index);
+
+                            const checkClass =
+                                checkState === 'all'
+                                    ? 'checked'
+                                    : checkState === 'partial'
+                                        ? 'partial'
+                                        : '';
+
+                            const checkLabel =
+                                checkState === 'all'
+                                    ? '체크됨 ✓'
+                                    : checkState === 'partial'
+                                        ? '일부 체크'
+                                        : '체크';
+
+                            return `
+                                <button
+                                    type="button"
+                                    class="btn-search-check ${checkClass}"
+                                    data-grade="${item.grade}"
+                                    data-index="${item.index}"
+                                >
+                                    ${checkLabel}
+                                </button>
+                            `;
+                        })()}
+
+                        ${item.grade === 'N' && item.flower.includes('붉은 장미') ? `
+                            <button
+                                type="button"
+                                class="btn-search-open"
+                                data-flower="red-rose"
+                            >
+                                열기
+                            </button>
+                        ` : ''}
+
                         <button
                             type="button"
                             class="btn-search-holder"
@@ -2344,6 +2693,43 @@
 
             resultContainer.innerHTML =
                 html;
+
+
+            resultContainer
+                .querySelectorAll(
+                    '.btn-search-open'
+                )
+                .forEach(button => {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+                            openFlowerDetail();
+                        }
+                    );
+
+                });
+
+
+            resultContainer
+                .querySelectorAll(
+                    '.btn-search-check'
+                )
+                .forEach(button => {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            toggleFlowerCheckFromSearch(
+                                this.dataset.grade,
+                                Number(this.dataset.index)
+                            );
+
+                        }
+                    );
+
+                });
 
 
             resultContainer
@@ -2416,6 +2802,22 @@
                     '&#039;'
                 );
 
+        }
+
+
+        function openFlowerDetail() {
+            document
+                .getElementById('flowerDetailModal')
+                .classList
+                .add('active');
+        }
+
+
+        function closeFlowerDetail() {
+            document
+                .getElementById('flowerDetailModal')
+                .classList
+                .remove('active');
         }
 
 

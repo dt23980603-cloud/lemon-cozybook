@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전체 꽃 도감 | 레몬</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, body, input, button, select, textarea { font-family: 'Gowun Batang', serif; box-sizing: border-box; }
+    body { background:#f9f9f9; margin:15px; color:#333; }
+    .container-full { width:100%; background:#fff; padding:20px; border:1px solid #ccc; border-radius:8px; box-shadow:2px 2px 5px rgba(0,0,0,.05); }
+    .header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:10px; }
+    .header-left { display:flex; align-items:center; gap:12px; }
+    .nav-btn-home { display:inline-flex; align-items:center; justify-content:center; width:50px; height:50px; background:#fff; border:1px solid #ccc; border-radius:8px; text-decoration:none; font-size:1.2rem; transition:.2s; }
+    .nav-btn-home:hover { background:#fff0f0; transform:translateY(-2px); }
+    .subtitle { margin:3px 0 0; color:#777; font-size:.88rem; }
+
+    .control-card { background:#f8f9fa; border:1px solid #333; border-radius:6px; padding:15px; margin-bottom:18px; }
+    .search-row { display:flex; gap:8px; margin-bottom:12px; }
+    .search-input { flex:1; min-width:0; padding:10px 12px; border:1px solid #aaa; border-radius:6px; font-size:.95rem; background:#fff; }
+    .btn-clear { padding:9px 14px; background:#fff; border:1px solid #999; border-radius:6px; font-weight:bold; cursor:pointer; }
+    .btn-clear:hover { background:#f1f1f1; }
+    .tab-container { display:flex; gap:10px; flex-wrap:wrap; }
+    .tab-btn { flex:1; min-width:92px; padding:10px 12px; background:#f1f1f1; border:1px solid #ccc; border-radius:8px; font-weight:bold; font-size:.95rem; cursor:pointer; transition:.2s; }
+    .tab-btn:hover { filter:brightness(.96); }
+    .tab-btn.active[data-grade="ALL"] { background:#fff0f0; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="N"] { background:#d4edbc; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="R"] { background:#bfe1f6; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="SR"] { background:#e6cff2; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="SSR"] { background:#ffe5a0; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .tab-btn.active[data-grade="UR"] { background:#ffcfc9; border-color:#4b4949; box-shadow:inset 0 -3px 0 #4b4949; }
+    .result-info { display:flex; justify-content:space-between; align-items:center; gap:10px; margin:0 2px 12px; color:#666; font-size:.88rem; }
+
+    .flower-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(205px,1fr)); gap:16px; }
+    .flower-card { background:#fff; border:1px solid #bbb; border-radius:10px; overflow:hidden; box-shadow:2px 2px 5px rgba(0,0,0,.05); transition:.2s; }
+    .flower-card:hover { transform:translateY(-2px); box-shadow:2px 5px 10px rgba(0,0,0,.09); }
+    .image-wrap { position:relative; aspect-ratio:1/1; background:#f8f9fa; border-bottom:1px solid #ddd; display:flex; align-items:center; justify-content:center; padding:12px; }
+    .flower-image { width:100%; height:100%; object-fit:contain; }
+    .grade-badge { position:absolute; top:10px; left:10px; display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:28px; padding:0 9px; border:1px solid #777; border-radius:14px; font-size:.82rem; font-weight:bold; background:#d4edbc; }
+    .card-body { padding:13px; text-align:center; }
+    .flower-name { font-size:1rem; font-weight:bold; margin-bottom:10px; }
+    .flower-meta { color:#777; font-size:.78rem; margin-bottom:11px; }
+    .btn-open { width:100%; padding:8px 12px; background:#fff0f0; border:1px solid #666; border-radius:6px; font-size:.85rem; font-weight:bold; cursor:pointer; transition:.15s; }
+    .btn-open:hover { background:#fae0e0; }
+    .empty-result { grid-column:1/-1; padding:50px 15px; text-align:center; color:#888; border:1px dashed #ccc; border-radius:8px; background:#fafafa; }
+
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1200; justify-content:center; align-items:center; padding:18px; }
+    .modal-overlay.active { display:flex; }
+    .flower-detail-card { background:#fff; border:2px solid #333; border-radius:10px; padding:20px; width:520px; max-width:100%; box-shadow:0 4px 15px rgba(0,0,0,.2); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px; }
+    .modal-title { font-weight:bold; font-size:1.1rem; }
+    .modal-close { background:none; border:none; font-size:1.2rem; font-weight:bold; cursor:pointer; color:#888; }
+    .modal-close:hover { color:#000; }
+    .flower-detail-layout { display:flex; gap:20px; align-items:flex-start; }
+    .flower-detail-image { width:160px; height:160px; object-fit:contain; border:1px solid #ccc; border-radius:10px; background:#f8f9fa; flex-shrink:0; }
+    .flower-detail-info { flex:1; min-width:0; }
+    .flower-detail-name { font-size:1.15rem; font-weight:bold; margin-bottom:12px; }
+    .flower-detail-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid #eee; font-size:.9rem; line-height:1.45; }
+    .flower-detail-label { width:80px; flex-shrink:0; color:#666; font-weight:bold; }
+    .flower-detail-source { margin-top:12px; font-size:.75rem; color:#999; }
+
+    @media (max-width:700px) { .flower-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) {
+      body { margin:8px; }
+      .container-full { padding:13px; }
+      .header { align-items:flex-start; }
+      .header h1 { font-size:1.25rem !important; }
+      .tab-btn { min-width:72px; }
+      .flower-grid { grid-template-columns:1fr; }
+      .flower-detail-layout { flex-direction:column; align-items:center; }
+      .flower-detail-info { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-full">
+    <div class="header">
+      <div class="header-left">
+        <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
+        <div>
+          <h1 style="margin:0; font-size:1.5rem;">🌷전체 꽃 도감🌷</h1>
+          <p class="subtitle">더 코지 플로리스트의 모든 꽃을 사진으로 확인할 수 있습니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-card">
+      <div class="search-row">
+        <input id="flowerSearch" class="search-input" type="search" placeholder="🔍 꽃 이름 검색..." autocomplete="off">
+        <button id="clearSearch" class="btn-clear" type="button">초기화</button>
+      </div>
+      <div class="tab-container">
+        <button class="tab-btn active" data-grade="ALL">전체 <span class="count">(5)</span></button>
+        <button class="tab-btn" data-grade="N">N <span class="count">(5)</span></button>
+        <button class="tab-btn" data-grade="R">R <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="SR">SR <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="SSR">SSR <span class="count">(0)</span></button>
+        <button class="tab-btn" data-grade="UR">UR <span class="count">(0)</span></button>
+      </div>
+    </div>
+
+    <div class="result-info">
+      <span id="resultText">총 5개의 꽃</span>
+      <span>※ 현재 디자인 확인용 프로토타입입니다.</span>
+    </div>
+
+    <div id="flowerGrid" class="flower-grid"></div>
+  </div>
+
+  <div class="modal-overlay" id="flowerDetailModal" aria-hidden="true">
+    <div class="flower-detail-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="detailTitle">🌹 꽃 정보</div>
+        <button class="modal-close" type="button" id="closeModal" aria-label="닫기">✕</button>
+      </div>
+      <div class="flower-detail-layout">
+        <img id="detailImage" src="" alt="" class="flower-detail-image">
+        <div class="flower-detail-info">
+          <div id="detailName" class="flower-detail-name"></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="detailGrade"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="detailScore"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="detailAcquire"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">도감 조건</span><span id="detailUnlock"></span></div>
+          <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="detailNote"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const flowers = [
+      { id:'F0260', name:'붉은 장미', grade:'N', guildScore:9, image:'images/flowers/F0260.webp', acquire:'기본 획득', unlock:'레벨 01 해제', note:'무과금 가능' },
+      { id:'F0261', name:'은방울꽃', grade:'N', guildScore:9, image:'images/flowers/F0261.webp', acquire:'기본 획득', unlock:'레벨 01 해제', note:'무과금 가능' },
+      { id:'F0262', name:'자색 도라지', grade:'N', guildScore:9, image:'images/flowers/F0262.webp', acquire:'기본 획득', unlock:'레벨 03 해제', note:'무과금 가능' },
+      { id:'F0263', name:'노란 장미', grade:'N', guildScore:9, image:'images/flowers/F0263.webp', acquire:'기본 획득', unlock:'레벨 04 해제', note:'무과금 가능' },
+      { id:'F0264', name:'카네이션', grade:'N', guildScore:9, image:'images/flowers/F0264.webp', acquire:'기본 획득', unlock:'레벨 05 해제', note:'무과금 가능' }
+    ];
+    let activeGrade = 'ALL';
+
+    const grid = document.getElementById('flowerGrid');
+    const searchInput = document.getElementById('flowerSearch');
+    const resultText = document.getElementById('resultText');
+    const modal = document.getElementById('flowerDetailModal');
+
+    function renderFlowers() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const filtered = flowers.filter(f => (activeGrade === 'ALL' || f.grade === activeGrade) && f.name.toLowerCase().includes(keyword));
+      resultText.textContent = `총 ${filtered.length}개의 꽃`;
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty-result">조건에 맞는 꽃이 없습니다.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(f => `
+        <article class="flower-card">
+          <div class="image-wrap">
+            <span class="grade-badge">${f.grade}</span>
+            <img src="${f.image}" alt="${f.name}" class="flower-image">
+          </div>
+          <div class="card-body">
+            <div class="flower-name">${f.name}</div>
+            <div class="flower-meta">길드전 · ${f.guildScore}점</div>
+            <button class="btn-open" type="button" data-id="${f.id}">열기</button>
+          </div>
+        </article>`).join('');
+
+      document.querySelectorAll('.btn-open').forEach(btn => btn.addEventListener('click', openDetail));
+    }
+
+    function openDetail() {
+      const flower = flowers.find(f => f.id === this.dataset.id);
+      if (!flower) return;
+      document.getElementById('detailImage').src = flower.image;
+      document.getElementById('detailImage').alt = flower.name;
+      document.getElementById('detailName').textContent = flower.name;
+      document.getElementById('detailGrade').textContent = flower.grade;
+      document.getElementById('detailScore').textContent = `${flower.guildScore}점`;
+      document.getElementById('detailAcquire').textContent = flower.acquire;
+      document.getElementById('detailUnlock').textContent = flower.unlock;
+      document.getElementById('detailNote').textContent = flower.note;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeDetail() {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeGrade = btn.dataset.grade;
+        renderFlowers();
+      });
+    });
+    searchInput.addEventListener('input', renderFlowers);
+    document.getElementById('clearSearch').addEventListener('click', () => { searchInput.value=''; activeGrade='ALL'; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.grade==='ALL')); renderFlowers(); searchInput.focus(); });
+    document.getElementById('closeModal').addEventListener('click', closeDetail);
+    modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+    renderFlowers();
+  </script>
+</body>
+</html>
