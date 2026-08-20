@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>레몬 | 더 코지 플로리스트</title>
+
+    <!-- 고운 바탕 폰트 불러오기 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 모든 글자를 Gowun Batang으로 지정 */
+        *, body, input, button, select, textarea {
+            font-family: 'Gowun Batang', serif !important;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notice-box {
+            background-color: #fff9db;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .notice-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .notice-content p {
+            margin: 6px 0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        /* 버튼 메뉴 스타일 */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #fff9db;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn:hover {
+            background-color: #fff2cc;
+            transform: translateY(-2px);
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #333;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #fff9db;
+            font-weight: bold;
+        }
+
+        /* 표 헤더 / 제목 스타일 */
+        .table-header-box {
+            background-color: #fff9db;
+            border: 1px solid #333;
+            border-bottom: none;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .btn-reset {
+            background-color: #ff6b6b;
+            color: #fff;
+            border: 1px solid #d93838;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #fa5252;
+        }
+
+        /* 입력 양식 스타일 */
+        .add-form-card {
+            background: #fff;
+            border: 1px solid #333;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-row input,
+        .form-row select {
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .input-category {
+            width: 100px;
+        }
+
+        .input-content {
+            flex: 1;
+        }
+
+        .btn-add {
+            background-color: #fff2cc;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #ffd94e;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- 좌측 영역 (공지사항 & 이동 버튼 4개) -->
+        <div class="left-panel">
+            <div class="notice-box">
+                <div class="notice-title">🍋 레몬 NOTICE | 새로운 길드원 여러분 환영합니다!</div>
+                <div class="notice-content">
+                    <p># 새로운 길드원 여러분! 🍋레몬에 오신 것을 환영합니다!💖<br>
+                    <p># 인게임 공식 업데이트 후, 1-3일 이내에 최대한 추가하도록 노력하겠습니다:)
+                    <p># 등록되지 않은 꽃은 아래 '제보하기'를 눌러 제보해주시기 바랍니다:)</p>
+                    <p># 해당 웹사이트에 대해서 추가 의견사항 있으시면 언제든지 자유롭게 말씀해주세요 :)</p>
+                </div>
+            </div>
+
+            <!-- 페이지 이동 버튼 4개 -->
+            <div class="button-grid">
+                <a href="page1.html" class="nav-btn">📖코지 공략모음📖</a>
+                <a href="page2.html" class="nav-btn">🌸길드 꽃 도감🌸</a>
+                <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
+                <a href="page4.html" class="nav-btn">💡플라워아트💡</a>
+            </div>
+        </div>
+
+        <!-- 우측 영역 (업데이트 내역 & 입력 폼) -->
+        <div class="right-panel">
+            <div>
+                <!-- 타이틀 바 & 전체 초기화 버튼 -->
+                <div class="table-header-box">
+                    <span class="table-title">🍋 업데이트 내역</span>
+                    <button type="button" class="btn-reset" onclick="resetTable()">전체 초기화</button>
+                </div>
+
+                <table id="updateTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">수정 일자</th>
+                            <th style="width: 18%;">분류</th>
+                            <th style="width: 42%;">내용</th>
+                            <th style="width: 18%;">꽃 등급</th>
+                        </tr>
+                    </thead>
+                    <tbody id="updateTbody">
+                        <!-- 등록되는 내역이 이곳에 상단 추가됩니다 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 내용 등록 입력 폼 -->
+            <div class="add-form-card">
+                <div style="font-weight: bold; font-size: 0.95rem;">➕ 업데이트 내역 추가</div>
+                <div class="form-row">
+                    <input type="text" id="inputCategory" class="input-category" placeholder="분류">
+                    <input type="text" id="inputContent" class="input-content" placeholder="업데이트 내용">
+                    <select id="selectGrade" onchange="updateSelectColor(this)"
+                        style="background-color: #d9ead3; font-weight: normal;">
+                        <option value="N" style="background-color: #d9ead3;">N</option>
+                        <option value="R" style="background-color: #cfe2f3;">R</option>
+                        <option value="SR" style="background-color: #d9d2e9;">SR</option>
+                        <option value="SSR" style="background-color: #fff2cc;">SSR</option>
+                        <option value="UR" style="background-color: #f4cccc;">UR</option>
+                    </select>
+                    <button type="button" class="btn-add" onclick="addUpdateRow()">등록</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 브라우저 저장소(localStorage)에서 데이터 불러오기
+        let updateList = JSON.parse(localStorage.getItem('guild_update_list')) || [];
+        let customFlowers = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
+        function updateSelectColor(selectEl) {
+            const gradeColors = {
+                'N': '#d9ead3',
+                'R': '#cfe2f3',
+                'SR': '#d9d2e9',
+                'SSR': '#fff2cc',
+                'UR': '#f4cccc'
+            };
+
+            const selectedValue = selectEl.value;
+            if (gradeColors[selectedValue]) {
+                selectEl.style.backgroundColor = gradeColors[selectedValue];
+            }
+        }
+
+
+
+        // 페이지 시작 시 기존 저장 내역 불러와서 표에 그리기
+        window.onload = function () {
+            renderTable();
+        };
+
+        // 행 추가 함수
+        function addUpdateRow() {
+            const categoryInput = document.getElementById('inputCategory');
+            const contentInput = document.getElementById('inputContent');
+            const gradeSelect = document.getElementById('selectGrade');
+
+            const category = categoryInput.value.trim();
+            const content = contentInput.value.trim();
+            const grade = gradeSelect.value;
+
+            if (!content) {
+                alert('내용을 입력해 주세요!');
+                return;
+            }
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+
+            // 꽃 이름 형식을 [분류] 내용 (분류가 없으면 내용만)으로 설정
+            const formattedFlowerName = category ? `[${category}] ${content}` : content;
+
+            // 업데이트 내역 배열 상단에 추가
+            updateList.unshift({
+                date: formattedDate,
+                category: category || '-',
+                content: content,
+                grade: grade
+            });
+
+            // 꽃 도감 연동용 데이터 배열에 추가 (중복 등록 방지)
+            const exists = customFlowers.some(f => f.name === formattedFlowerName && f.grade === grade);
+            if (!exists) {
+                customFlowers.push({
+                    grade: grade,
+                    name: formattedFlowerName
+                });
+            }
+
+            // 2. localStorage에 각각 저장
+            localStorage.setItem('guild_update_list', JSON.stringify(updateList));
+            localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+
+            // 화면 다시 그리기 & 입력란 초기화
+            renderTable();
+
+            categoryInput.value = '';
+            contentInput.value = '';
+            gradeSelect.value = 'N';
+        }
+
+        // 전체 초기화 함수 (업데이트 내역 표만 삭제, 꽃 도감 데이터는 유지)
+        function resetTable() {
+            if (updateList.length === 0) {
+                alert('삭제할 내역이 없습니다.');
+                return;
+            }
+
+            if (confirm('업데이트 내역을 모두 지우시겠습니까?\n(※ 길드 꽃 도감에 추가된 꽃은 그대로 유지됩니다)')) {
+                updateList = [];
+                localStorage.removeItem('guild_update_list'); // 업데이트 내역 목록만 삭제
+                renderTable();
+            }
+        }
+
+        // 배열에 저장된 데이터를 가져와 표(HTML)에 그려주는 함수
+        function renderTable() {
+            const tbody = document.getElementById('updateTbody');
+            tbody.innerHTML = '';
+
+            if (updateList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                return;
+            }
+
+            updateList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${item.date}</td>
+          <td>${item.category}</td>
+          <td style="text-align: left; padding-left: 10px;">${item.content}</td>
+          <td>${item.grade}</td>
+        `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

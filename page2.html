@@ -1,0 +1,2833 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>길드 꽃 도감 | 레몬</title>
+    <!-- Google Fonts: Gowun Batang 불러오기 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        *,
+        body,
+        input,
+        button,
+        select,
+        textarea {
+            font-family: 'Gowun Batang', serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            margin: 15px;
+            color: #333;
+        }
+
+        .container-full {
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .nav-btn-home:hover {
+            background-color: #fff0f0;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset-danger {
+            background-color: #fff0f0;
+            color: #d93838;
+            border: 1px solid #d93838;
+            padding: 8px 14px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reset-danger:hover {
+            background-color: #d93838;
+            color: #ffffff;
+        }
+
+        .member-manage-card {
+            background-color: #f8f9fa;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .manage-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-row input,
+        .form-row select {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn-add {
+            background-color: #fff0f0;
+            border: 1px solid #333;
+            padding: 6px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-add:hover {
+            background-color: #fae0e0;
+        }
+
+        .member-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .member-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #999;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .member-tag:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }
+
+        .tag-길드장,
+        .role-길드장 {
+            background-color: #ffcfc9 !important;
+            color: #800000;
+            border-color: #e09f98;
+        }
+
+        .tag-부길드장,
+        .role-부길드장 {
+            background-color: #ffe5a0 !important;
+            color: #664d00;
+            border-color: #d1b25a;
+        }
+
+        .tag-임원,
+        .role-임원 {
+            background-color: #e6cff2 !important;
+            color: #4a154b;
+            border-color: #bfa1ce;
+        }
+
+        .tag-정예,
+        .role-정예 {
+            background-color: #bfe1f6 !important;
+            color: #004085;
+            border-color: #8bbcdb;
+        }
+
+        .tag-멤버,
+        .role-멤버 {
+            background-color: #d4edbc !important;
+            color: #1e4620;
+            border-color: #a4ce85;
+        }
+
+        .member-tag.selected {
+            border: 2px solid #000 !important;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .btn-reset-member-chk {
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 0.5px;
+            padding: 0;
+            line-height: 1;
+            transition: all 0.15s ease;
+        }
+
+        .btn-reset-member-chk:hover {
+            background: transparent;
+            filter: brightness(0.7);
+            transform: scale(1.1);
+        }
+
+        .btn-del-tag {
+            background: none;
+            border: none;
+            color: #555;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0 2px;
+            margin-left: 2px;
+        }
+
+        .btn-del-tag:hover {
+            color: #d93838;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            filter: brightness(0.95);
+        }
+
+        .grade-count {
+            margin-left: 6px;
+            font-size: 0.88rem;
+            font-weight: normal;
+            color: #555;
+        }
+
+        .tab-btn[data-grade="N"].active {
+            background-color: #d4edbc !important;
+            border-color: #4b4949;
+            box-shadow: inset 0 -3px 0 #4b4949;
+        }
+
+        .tab-btn[data-grade="R"].active {
+            background-color: #bfe1f6 !important;
+            border-color: #4b4949;
+            box-shadow: inset 0 -3px 0 #4b4949;
+        }
+
+        .tab-btn[data-grade="SR"].active {
+            background-color: #e6cff2 !important;
+            border-color: #4b4949;
+            box-shadow: inset 0 -3px 0 #4b4949;
+        }
+
+        .tab-btn[data-grade="SSR"].active {
+            background-color: #ffe5a0 !important;
+            border-color: #4b4949;
+            box-shadow: inset 0 -3px 0 #4b4949;
+        }
+
+        .tab-btn[data-grade="UR"].active {
+            background-color: #f4cccc !important;
+            border-color: #4b4949;
+            box-shadow: inset 0 -3px 0 #4b4949;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .table-wrapper {
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .top-scrollbar-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+            background-color: #f1f1f1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .top-scrollbar-content {
+            height: 1px;
+        }
+
+        .table-scroll-body {
+            overflow-x: auto;
+            max-width: 100%;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .table-scroll-body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sheet-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            white-space: nowrap;
+        }
+
+        /* 길드원 필터링 시 실제 표시되는 열까지만 표 너비 축소 */
+        .sheet-table.filtered {
+            width: auto;
+            min-width: 0;
+        }
+
+        .sheet-table.filtered th:not(.sticky-col),
+        .sheet-table.filtered td:not(.sticky-col) {
+            width: 120px;
+            min-width: 120px;
+        }
+
+        .sheet-table th,
+        .sheet-table td {
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 0.9rem;
+            min-width: 90px;
+            background-color: #fff;
+        }
+
+        .sheet-table .sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            min-width: 280px;
+            width: 280px;
+            box-sizing: border-box;
+            border-right: 2px solid #333 !important;
+        }
+
+        th.sticky-col {
+            background-color: #f8f9fa !important;
+            z-index: 6;
+            font-weight: bold;
+        }
+
+        td.flower-name {
+            text-align: left;
+            padding-left: 8px;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        td.flower-name.flower-N {
+            background-color: #d4edbc !important;
+        }
+
+        td.flower-name.flower-R {
+            background-color: #bfe1f6 !important;
+        }
+
+        td.flower-name.flower-SR {
+            background-color: #e6cff2 !important;
+        }
+
+        td.flower-name.flower-SSR {
+            background-color: #ffe5a0 !important;
+        }
+
+        td.flower-name.flower-UR {
+            background-color: #ffcfc9 !important;
+        }
+
+        .chk-box {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #555;
+        }
+
+        .btn-flower-info {
+            background-color: #ffffff;
+            border: 1px solid #666;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            margin-right: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.15s ease;
+            vertical-align: middle;
+        }
+
+        .btn-flower-info:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 360px;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .modal-close:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .holder-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .empty-holder {
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* 꽃 검색 */
+        .flower-search-card {
+            background-color: #f9f9f9;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .flower-search-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .btn-open-flower-search {
+            width: 100%;
+            padding: 10px 14px;
+            background-color:#fff0f0;
+            border: 1px solid #333;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-open-flower-search:hover {
+            background-color: #fae0e0;
+        }
+
+        .search-modal-card {
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 640px;
+            max-width: 90%;
+            max-height: 80vh;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .flower-search-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .flower-search-input {
+            flex: 1;
+            min-width: 0;
+            padding: 9px 11px;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .btn-search-clear {
+            padding: 8px 12px;
+            background-color: #f5f5f5;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-search-clear:hover {
+            background-color: #e9e9e9;
+        }
+
+        .flower-search-result {
+            max-height: 420px;
+            overflow-y: auto;
+            border-top: 1px solid #ddd;
+        }
+
+        .search-guide {
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 28px 10px;
+        }
+
+        .search-result-count {
+            padding: 9px 4px;
+            font-size: 0.85rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-result-item:hover {
+            background-color: #fafafa;
+        }
+
+        .search-result-grade {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 46px;
+            height: 26px;
+            padding: 0 8px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        .search-grade-N {
+            background-color: #d4edbc;
+        }
+
+        .search-grade-R {
+            background-color: #bfe1f6;
+        }
+
+        .search-grade-SR {
+            background-color: #e6cff2;
+        }
+
+        .search-grade-SSR {
+            background-color: #ffe5a0;
+        }
+
+        .search-grade-UR {
+            background-color: #ffcfc9;
+        }
+
+        .search-result-name {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .btn-search-holder {
+            flex-shrink: 0;
+            padding: 4px 9px;
+            background-color: #fff;
+            border: 1px solid #666;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-search-holder:hover {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-full">
+
+        <div class="header">
+            <div class="header-left">
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
+                <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
+            </div>
+
+            <button type="button" class="btn-reset-danger" onclick="resetAllFlowers()">
+                🗑️ 등록된 꽃 목록 전체 초기화
+            </button>
+        </div>
+
+        <!-- 길드원 목록 관리 -->
+        <div class="member-manage-card">
+
+            <div class="manage-title">
+                📖 길드원 목록 관리
+                <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
+                    (닉네임 태그 클릭: 필터링 / 🔄버튼: 해당 길드원 체크 표시 초기화)
+                </span>
+            </div>
+
+            <div class="form-row">
+
+                <select id="inputRole">
+                    <option value="길드장">길드장</option>
+                    <option value="부길드장">부길드장</option>
+                    <option value="임원">임원</option>
+                    <option value="정예">정예</option>
+                    <option value="멤버" selected>멤버</option>
+                </select>
+
+                <input
+                    type="text"
+                    id="inputNickname"
+                    placeholder="닉네임 입력"
+                    onkeyup="if(event.keyCode==13) addMember()"
+                >
+
+                <button type="button" class="btn-add" onclick="addMember()">
+                    길드원 추가
+                </button>
+
+            </div>
+
+            <div class="member-tag-list" id="memberTagList"></div>
+
+        </div>
+
+
+        <!-- 꽃 검색 -->
+        <div class="flower-search-card">
+
+            <div class="flower-search-title">
+                🔎 꽃 검색
+            </div>
+
+            <button
+                type="button"
+                class="btn-open-flower-search"
+                onclick="openFlowerSearch()"
+            >
+                꽃 검색창 열기
+            </button>
+
+        </div>
+
+
+        <!-- 등급 선택 탭 -->
+        <div class="tab-container">
+
+            <button class="tab-btn active" data-grade="N" onclick="openGrade(event, 'grade-N')">
+                N <span class="grade-count" id="count-N"></span>
+            </button>
+
+            <button class="tab-btn" data-grade="R" onclick="openGrade(event, 'grade-R')">
+                R <span class="grade-count" id="count-R"></span>
+            </button>
+
+            <button class="tab-btn" data-grade="SR" onclick="openGrade(event, 'grade-SR')">
+                SR <span class="grade-count" id="count-SR"></span>
+            </button>
+
+            <button class="tab-btn" data-grade="SSR" onclick="openGrade(event, 'grade-SSR')">
+                SSR <span class="grade-count" id="count-SSR"></span>
+            </button>
+
+            <button class="tab-btn" data-grade="UR" onclick="openGrade(event, 'grade-UR')">
+                UR <span class="grade-count" id="count-UR"></span>
+            </button>
+
+        </div>
+
+
+        <!-- N -->
+        <div id="grade-N" class="tab-content active">
+
+            <div class="table-wrapper">
+
+                <div class="top-scrollbar-container" id="top-scroll-N">
+                    <div class="top-scrollbar-content" id="top-scroll-content-N"></div>
+                </div>
+
+                <div class="table-scroll-body" id="body-scroll-N">
+
+                    <table class="sheet-table" id="table-N">
+
+                        <thead>
+                            <tr class="row-role">
+                                <th class="sticky-col">직위</th>
+                            </tr>
+
+                            <tr class="row-name">
+                                <th class="sticky-col">닉네임</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- R -->
+        <div id="grade-R" class="tab-content">
+
+            <div class="table-wrapper">
+
+                <div class="top-scrollbar-container" id="top-scroll-R">
+                    <div class="top-scrollbar-content" id="top-scroll-content-R"></div>
+                </div>
+
+                <div class="table-scroll-body" id="body-scroll-R">
+
+                    <table class="sheet-table" id="table-R">
+
+                        <thead>
+                            <tr class="row-role">
+                                <th class="sticky-col">직위</th>
+                            </tr>
+
+                            <tr class="row-name">
+                                <th class="sticky-col">닉네임</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SR -->
+        <div id="grade-SR" class="tab-content">
+
+            <div class="table-wrapper">
+
+                <div class="top-scrollbar-container" id="top-scroll-SR">
+                    <div class="top-scrollbar-content" id="top-scroll-content-SR"></div>
+                </div>
+
+                <div class="table-scroll-body" id="body-scroll-SR">
+
+                    <table class="sheet-table" id="table-SR">
+
+                        <thead>
+                            <tr class="row-role">
+                                <th class="sticky-col">직위</th>
+                            </tr>
+
+                            <tr class="row-name">
+                                <th class="sticky-col">닉네임</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SSR -->
+        <div id="grade-SSR" class="tab-content">
+
+            <div class="table-wrapper">
+
+                <div class="top-scrollbar-container" id="top-scroll-SSR">
+                    <div class="top-scrollbar-content" id="top-scroll-content-SSR"></div>
+                </div>
+
+                <div class="table-scroll-body" id="body-scroll-SSR">
+
+                    <table class="sheet-table" id="table-SSR">
+
+                        <thead>
+                            <tr class="row-role">
+                                <th class="sticky-col">직위</th>
+                            </tr>
+
+                            <tr class="row-name">
+                                <th class="sticky-col">닉네임</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- UR -->
+        <div id="grade-UR" class="tab-content">
+
+            <div class="table-wrapper">
+
+                <div class="top-scrollbar-container" id="top-scroll-UR">
+                    <div class="top-scrollbar-content" id="top-scroll-content-UR"></div>
+                </div>
+
+                <div class="table-scroll-body" id="body-scroll-UR">
+
+                    <table class="sheet-table" id="table-UR">
+
+                        <thead>
+                            <tr class="row-role">
+                                <th class="sticky-col">직위</th>
+                            </tr>
+
+                            <tr class="row-name">
+                                <th class="sticky-col">닉네임</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 꽃 검색 모달 -->
+    <div class="modal-overlay" id="flowerSearchModal">
+
+        <div class="search-modal-card">
+
+            <div class="modal-header">
+
+                <div class="modal-title">
+                    🔎 꽃 검색
+                </div>
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    onclick="closeFlowerSearch()"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="flower-search-input-row">
+
+                <input
+                    type="text"
+                    id="flowerSearchInput"
+                    class="flower-search-input"
+                    placeholder="꽃 이름 또는 획득처를 검색해 주세요."
+                    autocomplete="off"
+                    oninput="searchFlowers()"
+                >
+
+                <button
+                    type="button"
+                    class="btn-search-clear"
+                    onclick="clearFlowerSearch()"
+                >
+                    초기화
+                </button>
+
+            </div>
+
+            <div class="flower-search-result" id="flowerSearchResult">
+
+                <div class="search-guide">
+                    검색할 꽃 이름을 입력해 주세요.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 꽃 보유자 조회 모달 -->
+    <div class="modal-overlay" id="infoModal">
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <div class="modal-title" id="modalFlowerTitle">
+                    🌸 꽃 이름
+                </div>
+
+                <button class="modal-close" onclick="closeModal()">
+                    ✕
+                </button>
+
+            </div>
+
+            <div class="modal-body" id="modalHolderContent"></div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const grades = ['N', 'R', 'SR', 'SSR', 'UR'];
+
+        const roleOrder = {
+            '길드장': 1,
+            '부길드장': 2,
+            '임원': 3,
+            '정예': 4,
+            '멤버': 5
+        };
+
+
+        /* =========================
+           꽃 데이터
+        ========================= */
+
+        const defaultNFlowers = [
+            "[레벨 01 해제] 붉은 장미",
+            "[레벨 01 해제] 은방울꽃",
+            "[레벨 03 해제] 자색 도라지",
+            "[레벨 04 해제] 노란 장미",
+            "[레벨 05 해제] 카네이션",
+            "[레벨 06 해제] 노란 튤립",
+            "[레벨 07 해제] 제비꽃",
+            "[레벨 08 해제] 분홍 튤립",
+            "[레벨 09 해제] 호접란",
+            "[레벨 10 해제] 분홍 장미",
+            "[레벨 11 해제] 흰 백합",
+            "[레벨 12 해제] 데이지",
+            "[레벨 13 해제] 분홍 백합",
+            "[레벨 14 해제] 푸른별꽃",
+            "[레벨 15 해제] 노란 백합",
+            "[레벨 16 해제] 자색 수국",
+            "[레벨 17 해제] 동백꽃",
+            "[레벨 18 해제] 분홍 수국",
+            "[레벨 19 해제] 구즈마니아",
+            "[레벨 20 해제] 파란 수국",
+            "[레벨 21 해제] 해바라기",
+            "[레벨 22 해제] 프리지아",
+            "[레벨 23 해제] 금술 국화",
+            "[레벨 24 해제] 수선화",
+            "[레벨 25 해제] 거베라",
+            "[레벨 26 해제] 붉은 카라",
+            "[레벨 27 해제] 초롱꽃",
+            "[레벨 28 해제] 노란 카라",
+            "[레벨 29 해제] 민들레",
+            "[레벨 30 해제] 자색 카라",
+            "[레벨 31 해제] 연보라 히아신스",
+            "[레벨 32 해제] 자귀나무꽃",
+            "[레벨 33 해제] 연분홍 히아신스",
+            "[레벨 34 해제] 재스민",
+            "[레벨 35 해제] 연노랑 히아신스",
+            "[레벨 36 해제] 황금 여의 국화",
+            "[레벨 37 해제] 치자꽃",
+            "[레벨 38 해제] 연분홍 여의 국화",
+            "[레벨 39 해제] 분홍 복사꽃",
+            "[레벨 40 해제] 연귤색 여의 국화",
+            "[레벨 41 해제] 비취 리시안셔스",
+            "[레벨 42 해제] 자운 라일락",
+            "[레벨 43 해제] 붉은구름 리시안셔스",
+            "[레벨 44 해제] 연노랑 라일락",
+            "[레벨 45 해제] 호박 리시안셔스",
+            "[레벨 46 해제] 자홍색 부겐빌레아",
+            "[레벨 47 해제] 물망초",
+            "[레벨 48 해제] 연노랑 부겐빌레아",
+            "[레벨 49 해제] 설흔 구리향",
+            "[레벨 50 해제] 연벚꽃 부겐빌레아",
+            "[레벨 51 해제] 탐스러운 덩굴장미",
+            "[레벨 52 해제] 성심 백합",
+            "[레벨 53 해제] 자색 폭스테일",
+            "[레벨 54 해제] 서리꽃 석곡",
+            "[레벨 55 해제] 분홍색 폭스테일",
+            "[레벨 56 해제] 청백 로벨리아",
+            "[레벨 57 해제] 노란 폭스테일",
+            "[레벨 58 해제] 자색 괭이밥",
+            "[레벨 59 해제] 주황색 괭이밥",
+            "[레벨 60 해제] 빛나는 노란 괭이밥",
+            "[레벨 61 해제] 눈꽃 용토주",
+            "[레벨 62 해제] 금잔 금관화",
+            "[레벨 63 해제] 안개 분홍 신부화",
+            "[레벨 64 해제] 진홍 벚꽃 용토주",
+            "[레벨 65 해제] 주황 불꽃 금관화",
+            "[레벨 66 해제] 구름 베일 신부화",
+            "[레벨 67 해제] 보랏빛 베일 용토주",
+            "[레벨 68 해제] 진홍 불꽃 금관화",
+            "[레벨 69 해제] 노을빛 신부꽃"
+        ];
+
+
+        const defaultRFlowers = [
+            "[구름이 머무는 얕은 해변] 야자수 그늘",
+            "[꽃시장 교환] 개상사화",
+            "[꽃시장 교환] 구름빛 델피니움",
+            "[꽃시장 교환] 귤빛 불꽃 시클라멘",
+            "[꽃시장 교환] 그윽한 보랏빛 델피니움",
+            "[꽃시장 교환] 금박 베고니아",
+            "[꽃시장 교환] 금살구 진달래",
+            "[꽃시장 교환] 금술 접시꽃",
+            "[꽃시장 교환] 다투라",
+            "[꽃시장 교환] 반쯤 핀 칼랑코에",
+            "[꽃시장 교환] 보라솜털 시클라멘",
+            "[꽃시장 교환] 보랏빛 아부틸론",
+            "[꽃시장 교환] 복숭아빛 노루오줌",
+            "[꽃시장 교환] 복숭아빛 델피니움",
+            "[꽃시장 교환] 분홍솜털 안개꽃",
+            "[꽃시장 교환] 붉은 노을 아부틸론",
+            "[꽃시장 교환] 비취잎 소철",
+            "[꽃시장 교환] 석산",
+            "[꽃시장 교환] 아리따운 진달래",
+            "[꽃시장 교환] 안개 자색 아프리칸바이올렛",
+            "[꽃시장 교환] 연분홍 아프리칸바이올렛",
+            "[꽃시장 교환] 연분홍 협죽도",
+            "[꽃시장 교환] 연지 아프리칸바이올렛",
+            "[꽃시장 교환] 자홍색 협죽도",
+            "[꽃시장 교환] 진홍빛 아부틸론",
+            "[꽃시장 교환] 촉영 해당화",
+            "[꽃시장 교환] 취한뺨 해당화",
+            "[꽃시장 교환] 파란 눈의 영광",
+            "[꽃시장 교환] 핑크 심비디움",
+            "[꽃시장 교환] 하늘빛 재클린",
+            "[꽃시장 교환] 하얀 눈의 영광",
+            "[꽃시장 현상금] 개나리",
+            "[꽃시장 현상금] 극락조화",
+            "[꽃시장 현상금] 금살구 페튜니아",
+            "[꽃시장 현상금] 라이트 클레마티스",
+            "[꽃시장 현상금] 수정빛 페튜니아",
+            "[꽃시장 현상금] 순백 폼폼 국화",
+            "[꽃시장 현상금] 스파티필룸",
+            "[꽃시장 현상금] 안스리움",
+            "[꽃시장 현상금] 연귤색 폼폼 국화",
+            "[꽃시장 현상금] 연분홍 폼폼 국화",
+            "[꽃시장 현상금] 향수 백합",
+            "[꽃의 밀령] 먹물색 노루귀",
+            "[꽃의 밀령] 보라 심장 물상추",
+            "[꽃의 밀령] 복숭아빛 재클린",
+            "[꽃의 밀령] 연보라 깃털초",
+            "[꽃의 향기 조향] 붉은 심장 물상추",
+            "[꽃자수 시간] 노란 심장 물상추",
+            "[동심 축제] 분홍 방울",
+            "[따스한 봄소풍] 라넌큘러스",
+            "[미식 파티] 레트로 코코아",
+            "[백화 기록] 연분홍 노루귀",
+            "[별똥별의 향기] 금살구 온시디움",
+            "[별똥별의 향기] 순백 코스모스",
+            "[별똥별의 향기] 연노랑 녹용호",
+            "[별이슬 드림] 몬스테라",
+            "[별하늘의 기연] 황금 가시 장미",
+            "[빛나는 별의 세계] 블루스타 납매",
+            "[상방취화] 노란줄무늬 깃털초",
+            "[상방취화] 백설 노루귀",
+            "[설산의 기연] 스노우탑 크림슨",
+            "[여름 음악회] 햇살 맞이 무궁화",
+            "[응원 이벤트] 송이국화",
+            "[천심 동등] 주사 비단 등불",
+            "[커플 플라워 데이트] 눈 솜털 토끼꼬리",
+            "[커플 플라워 데이트] 보라색 솜털 토끼꼬리",
+            "[커플 플라워 데이트] 부드러운 분홍 토끼 꼬리",
+            "[펫] 귤빛 불꽃 익소라",
+            "[평화로운 우주 질서] 이슬에 물든 파란 나비",
+            "[플로럴 심포니] 진홍빛 석류꽃",
+            "[향기로운 회랑] 앵규다정",
+            "[VIP 상점] 눈솜털 안개꽃",
+            "[VIP 상점] 자홍깃 재클린",
+            "[VIP 상점] 푸른 솜털 안개꽃",
+            "[VIP 상점] 핑크화이트 시클라멘"
+        ];
+
+
+        const defaultSRFlowers = [
+            "[7일 접속] 윤생 호랑가시나무",
+            "[금관의 빛나는 정원] 분홍 왕관 프로테아",
+            "[금관의 빛나는 정원] 주황 노을 원추리",
+            "[꽃 패키지] 귤홍 윙윙 장미",
+            "[꽃 패키지] 레몬색 윙윙 장미",
+            "[꽃 패키지] 벚꽃 핑크 설강화",
+            "[꽃 패키지] 연분홍 마거리트",
+            "[꽃 패키지] 옥가루 설강화",
+            "[꽃 패키지] 주홍빛 윙윙 장미",
+            "[꽃 패키지] 창공빛 등나무",
+            "[꽃 패키지] 황혼 등나무",
+            "[꽃시장 교환] 구름자수 작약",
+            "[꽃시장 교환] 금서리 붓꽃",
+            "[꽃시장 교환] 꿀처럼 부드러운 달맞이꽃",
+            "[꽃시장 교환] 노을빛 산호꽃",
+            "[꽃시장 교환] 노을빛 아마릴리스",
+            "[꽃시장 교환] 달빛 아네모네",
+            "[꽃시장 교환] 따뜻한 노랑 루위시아",
+            "[꽃시장 교환] 먹술 아네모네",
+            "[꽃시장 교환] 묵옥 아네모네",
+            "[꽃시장 교환] 분홍 수레국화",
+            "[꽃시장 교환] 분홍 수정 루위시아",
+            "[꽃시장 교환] 분홍 스파티필룸",
+            "[꽃시장 교환] 분홍안개 맥문동",
+            "[꽃시장 교환] 붉은 눈 목향장미",
+            "[꽃시장 교환] 붉은불꽃 아네모네",
+            "[꽃시장 교환] 브룬펠시아",
+            "[꽃시장 교환] 새벽빛 목향장미",
+            "[꽃시장 교환] 서리꽃 맥문동",
+            "[꽃시장 교환] 연분홍 조팝나무",
+            "[꽃시장 교환] 연자색 산호꽃",
+            "[꽃시장 교환] 연지 작약",
+            "[꽃시장 교환] 연지빛 헬레보루스",
+            "[꽃시장 교환] 연홍색 접시꽃",
+            "[꽃시장 교환] 우아한 보라 코스모스",
+            "[꽃시장 교환] 우아한 보라빛 알리움",
+            "[꽃시장 교환] 유벽 메코놉시스",
+            "[꽃시장 교환] 윤기나는 작약",
+            "[꽃시장 교환] 진사 단목서",
+            "[꽃시장 교환] 진홍색 달리아",
+            "[꽃시장 교환] 차홍색 헬레보루스",
+            "[꽃시장 교환] 창봉 은목서",
+            "[꽃시장 교환] 타오르는 불꽃 레난테라",
+            "[꽃시장 교환] 푸른 소철",
+            "[꽃시장 교환] 홍시 칼랑코에",
+            "[꽃시장 교환] 황금잎 금목서",
+            "[꽃시장 교환] 흑수정 달리아",
+            "[꽃시장 교환] 흑자색 메코놉시스",
+            "[꽃시장 현상금] 연분홍 페튜니아",
+            "[꽃의 밀령] 달계곡 등나무",
+            "[꽃의 밀령] 연노랑 마거리트",
+            "[꽃의 밀령] 연보라 마거리트",
+            "[꽃의 밀령] 연보라 설강화",
+            "[누적 충전] 베들레헴의 별",
+            "[누적 충전] 별꿈 해파리",
+            "[누적 충전] 붉은노을 접시꽃",
+            "[누적 충전] 창공빛 산호초",
+            "[누적 충전] 취한 별의 꿈",
+            "[물결치는 별무리] 쌓인 옥빛 연꽃",
+            "[물결치는 별무리] 유리빛 조류 연꽃",
+            "[별똥별의 향기] 붉은 벚꽃 달맞이꽃",
+            "[별똥별의 향기] 연지 아네모네",
+            "[별똥별의 향기] 영롱한 얼음빛 납매",
+            "[별똥별의 향기] 진홍 벚꽃 나비무 장미",
+            "[별똥별의 향기] 푸른빛 달맞이꽃",
+            "[성수쌍영] 방울의 가벼운 춤",
+            "[성수쌍영] 초승달의 고요한 잠",
+            "[성장의 길] 연지 무궁화",
+            "[응원 이벤트] 연핑크 델피니움",
+            "[응원 이벤트] 연하늘 델피니움",
+            "[첫 충전 특별 선물] 반짝 솜토끼",
+            "[커플 플라워 데이트] 별바다의 방울소리",
+            "[패키지 화단] 구름빛 아스틸베",
+            "[패키지 화단] 금빛 목련",
+            "[패키지 화단] 금종 개나리",
+            "[패키지 화단] 꾀꼬리 장미",
+            "[패키지 화단] 꿈의 보라 으아리",
+            "[패키지 화단] 눈꽃 금어초",
+            "[패키지 화단] 단풍 온시디움",
+            "[패키지 화단] 맑은 봉우리 장미",
+            "[패키지 화단] 벚꽃 온시디움",
+            "[패키지 화단] 병아리색 헬레보루스",
+            "[패키지 화단] 봄빛 심비디움",
+            "[패키지 화단] 분홍 복숭아 달리아",
+            "[패키지 화단] 분홍구름 코스모스",
+            "[패키지 화단] 분홍안개 붓꽃",
+            "[패키지 화단] 붉은 깃털 아마릴리스",
+            "[패키지 화단] 붉은태양 히비스커스",
+            "[패키지 화단] 비홍 붓꽃",
+            "[패키지 화단] 새하얀 조팝나무",
+            "[패키지 화단] 아련한 자색 아스틸베",
+            "[패키지 화단] 아지랑이빛 장미",
+            "[패키지 화단] 연분홍 금어초",
+            "[패키지 화단] 연분홍 버베나",
+            "[패키지 화단] 연지빛 개양귀비",
+            "[패키지 화단] 오렌지꿀 버베나",
+            "[패키지 화단] 옥빛 글라디올러스",
+            "[패키지 화단] 용금 아네모네",
+            "[패키지 화단] 윤분홍 칼랑코에",
+            "[패키지 화단] 자색 글라디올러스",
+            "[패키지 화단] 자색 맥문동",
+            "[패키지 화단] 자색 수레국화",
+            "[패키지 화단] 주황 불꽃 글라디올러스",
+            "[패키지 화단] 진홍 진달래",
+            "[패키지 화단] 창벽 협죽도",
+            "[패키지 화단] 청영 루위시아",
+            "[패키지 화단] 푸른 수레국화",
+            "[패키지 화단] 핑크화이트 심비디움",
+            "[패키지 화단] 하늘색 금어초",
+            "[패키지 화단] 햇살 개양귀비",
+            "[패키지 화단] 향설 목향장미",
+            "[패키지 화단] 황금목 아마릴리스",
+            "[패키지 화단] 흑자색 개양귀비",
+            "[패키지 화단] 흑자색 목련",
+            "[풍요의 별그림] 따스한 여름 햇살",
+            "[풍요의 별그림] 진주 제비난",
+            "[해 질 녘의 장원] 고택 성자",
+            "[해 질 녘의 장원] 옛뜰 잔향"
+        ];
+
+
+        const defaultSSRFlowers = [
+            "[구름이 머무는 얕은 해변] 해변 오리의 시원한 여름",
+            "[꽃 패키지] 바다색 꿈의 조개",
+            "[꽃 패키지] 백자 환상 벚꽃",
+            "[꽃 패키지] 빛을 추적하는 꽃 모래시계",
+            "[꽃 패키지] 연보라 환상 벚꽃",
+            "[꽃 패키지] 연분홍 환상 벚꽃",
+            "[꽃 패키지] 파스텔 꿈의 조개",
+            "[꽃패키지] 불꽃심장 꿈조개",
+            "[누적 충전] 발달의 현",
+            "[누적 충전] 별빛 꿈의 방주",
+            "[누적 충전] 위엄 있는 분홍색 왕관",
+            "[동심 축제] 냥이의 즐거운 노래",
+            "[동심 축제] 무지개 오리의 즐거운 산책",
+            "[따스한 봄 소풍] 꽃케이크 바구니",
+            "[따스한 봄 소풍] 차와 야옹 이야기",
+            "[미식 파티] 심쿵 스위트 베리",
+            "[별똥별의 향기] 옥구슬 목련",
+            "[별이슬 드림] 꽃바다 환상꿈",
+            "[별이슬 드림] 별 그림자 수정",
+            "[별하늘의 기연] 우주 토끼 여행",
+            "[별하늘의 기연] 우주선 댕댕이",
+            "[빛나는 별의 세계] 별빛 입맞춤 구름 양",
+            "[설산의 기연] 별빛 레몬 토끼잔",
+            "[설산의 기연] 스노우 씰 샤베트",
+            "[설산의 기연] 핑크 치즈 컵",
+            "[스타소울 상점] 가을빛 단풍",
+            "[스타소울 상점] 크리스마스의 밤",
+            "[스타소울 상점] 행운의 올리브",
+            "[여름 음악회] 맑은 날의 노래 무대",
+            "[여름 음악회] 얕은 여울의 모래성",
+            "[응원 이벤트] 골든 스프링",
+            "[천심 동등] 수박 스위트덕",
+            "[커플 플라워 데이트] 구름 무지개 편지",
+            "[커플 플라워 데이트] 성란화의 언약",
+            "[커플 플라워 데이트] 학월성덩굴",
+            "[패키지 화단] 귤빛 불꽃 부용",
+            "[패키지 화단] 달빛 모란",
+            "[패키지 화단] 먹빛 모란",
+            "[패키지 화단] 몽롱한 청아",
+            "[패키지 화단] 보랏빛 꿈 부용",
+            "[패키지 화단] 봄 살구빛 옷자락",
+            "[패키지 화단] 분홍빛 물결꽃",
+            "[패키지 화단] 분홍옥 부용",
+            "[패키지 화단] 비령추란",
+            "[패키지 화단] 선녀의 춤",
+            "[패키지 화단] 수정빛 나비춤 장미",
+            "[패키지 화단] 자색 여운",
+            "[패키지 화단] 진홍빛 납매",
+            "[패키지 화단] 푸른안개 모란",
+            "[패키지 화단] 홍운 납매",
+            "[패키지 화단] 황금 장미",
+            "[평화로운 우주 질서] 햇살구름 양털",
+            "[플로럴 삼포니] 곰 보이스 박스",
+            "[플로럴 삼포니] 꽃밭 지저귐",
+            "[플로럴 삼포니] 조화로운 꽃",
+            "[해 질 녘의 장원] 적염 괴화",
+            "[향기로운 회랑] 보랏빛 구름의 안식",
+            "[향기로운 회랑] 푸른 물결의 춤",
+            "[향기로운 회랑] 황금빛 단꿈"
+        ];
+
+
+        const defaultURFlowers = [
+            "[누적 충전] 서리구름마",
+            "[누적 충전] 푸른 사슴 그림자",
+            "[따스한 봄 소풍] 나른한 시간",
+            "[별똥별의 향기] 별똥별의 향기",
+            "[별이슬 드림] 꽃나무 정원",
+            "[별자리] 게자리•물결치는 별무리",
+            "[별자리] 사자자리•금관의 빛나는 정원",
+            "[별자리] 쌍둥이자리•성수쌍영",
+            "[별자리] 황소자리•풍요의 별그림",
+            "[별하늘의 기연] 별을 쫓는 달토끼",
+            "[설산의 기연] 수정 서리의 아름다움",
+            "[스타소울 상점] 구름꿈 고래의 노래",
+            "[스타소울 상점] 동화의 성",
+            "[여름 음악회] 여름 섬의 음파",
+            "[구름이 머무는 얕은 해변] 파도 타는 여름 마녀",
+            "[동심 축제] 피어나는 동심",
+            "[미식 파티] 프로스팅 마녀",
+            "[빛나는 별의 세계] 별의 마녀",
+            "[평화로운 우주 질서] 구름빛 사절",
+            "[플로럴 심포니] 구름 조류 꽃무늬 배",
+            "[향기로운 회랑] 성스러운 깃털의 수호"
+        ];
+
+
+        const flowersData = {
+            N: defaultNFlowers,
+            R: defaultRFlowers,
+            SR: defaultSRFlowers,
+            SSR: defaultSSRFlowers,
+            UR: defaultURFlowers
+        };
+
+
+        function getCustomFlowers() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
+                return Array.isArray(saved) ? saved : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+
+        function getFlowerList(grade) {
+            const baseList = flowersData[grade] || [];
+            const merged = [...baseList];
+            const seen = new Set(baseList);
+
+            getCustomFlowers()
+                .filter(item => item && item.grade === grade && typeof item.name === 'string')
+                .forEach(item => {
+                    if (!seen.has(item.name)) {
+                        seen.add(item.name);
+                        merged.push(item.name);
+                    }
+                });
+
+            return merged;
+        }
+
+
+        function updateGradeCounts() {
+            grades.forEach(grade => {
+                const countEl = document.getElementById(`count-${grade}`);
+                if (countEl) {
+                    countEl.textContent = `(${getFlowerList(grade).length})`;
+                }
+            });
+        }
+
+
+        let members =
+            JSON.parse(localStorage.getItem('guild_members'))
+            ||
+            [
+                { id: 'm1', role: '길드장', name: '이지' },
+                { id: 'm2', role: '부길드장', name: '담당' },
+                { id: 'm3', role: '임원', name: 'NaNaJ' }
+            ];
+
+
+        let checks =
+            JSON.parse(localStorage.getItem('guild_checks'))
+            || {};
+
+
+        let selectedMemberId = null;
+
+
+        window.onload = function () {
+            renderAll();
+            setupScrollSync();
+        };
+
+
+        window.addEventListener('storage', function (event) {
+            if (event.key === 'guild_custom_flowers') {
+                renderAll();
+            }
+        });
+
+
+        function getSortedMembers(memberList) {
+
+            return [...memberList].sort(
+                (a, b) =>
+                    (roleOrder[a.role] || 99)
+                    -
+                    (roleOrder[b.role] || 99)
+            );
+
+        }
+
+
+        function openGrade(evt, gradeId) {
+
+            const contents =
+                document.getElementsByClassName("tab-content");
+
+            for (let i = 0; i < contents.length; i++) {
+                contents[i].classList.remove("active");
+            }
+
+
+            const buttons =
+                document.getElementsByClassName("tab-btn");
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
+
+
+            document
+                .getElementById(gradeId)
+                .classList.add("active");
+
+
+            evt.currentTarget
+                .classList.add("active");
+
+
+            updateScrollWidths();
+
+        }
+
+
+        function resetAllFlowers() {
+
+            if (
+                confirm(
+                    '등록된 꽃 목록 전체를 초기화하시겠습니까?\n' +
+                    '(모든 등급의 등록된 꽃 및 해당 체크 정보가 지워집니다.)'
+                )
+            ) {
+
+                localStorage.removeItem('guild_custom_flowers');
+
+                checks = {};
+
+                saveData();
+                renderAll();
+
+                alert(
+                    '등록된 모든 꽃 목록이 초기화되었습니다.'
+                );
+
+            }
+
+        }
+
+
+        function addMember() {
+
+            const roleSelect =
+                document.getElementById('inputRole');
+
+
+            const nameInput =
+                document.getElementById('inputNickname');
+
+
+            const name =
+                nameInput.value.trim();
+
+
+            const role =
+                roleSelect.value;
+
+
+            if (!name) {
+
+                alert('닉네임을 입력해 주세요!');
+
+                return;
+
+            }
+
+
+            members.push({
+                id: 'm_' + Date.now(),
+                role,
+                name
+            });
+
+
+            saveData();
+
+            renderAll();
+
+            nameInput.value = '';
+
+        }
+
+
+        function deleteMember(id, event) {
+
+            event.stopPropagation();
+
+
+            if (
+                confirm('해당 길드원을 삭제하시겠습니까?')
+            ) {
+
+                members =
+                    members.filter(
+                        m => m.id !== id
+                    );
+
+
+                if (
+                    selectedMemberId === id
+                ) {
+
+                    selectedMemberId = null;
+
+                }
+
+
+                for (let key in checks) {
+
+                    if (
+                        key.endsWith('_' + id)
+                    ) {
+
+                        delete checks[key];
+
+                    }
+
+                }
+
+
+                saveData();
+
+                renderAll();
+
+            }
+
+        }
+
+
+        function getActiveGrade() {
+
+            const activeButton =
+                document.querySelector('.tab-btn.active');
+
+            if (
+                activeButton &&
+                activeButton.dataset.grade
+            ) {
+
+                return activeButton.dataset.grade;
+
+            }
+
+
+            const activeContent =
+                document.querySelector('.tab-content.active');
+
+            if (
+                activeContent &&
+                activeContent.id
+            ) {
+
+                return activeContent.id.replace('grade-', '');
+
+            }
+
+
+            return 'N';
+
+        }
+
+
+        function resetMemberChecks(
+            memberId,
+            memberName,
+            event
+        ) {
+
+            event.stopPropagation();
+
+
+            const activeGrade =
+                getActiveGrade();
+
+
+            if (
+                confirm(
+                    `'${memberName}'님의 '${activeGrade}' 등급 꽃 체크 표시를 초기화하시겠습니까?`
+                )
+            ) {
+
+                const gradePrefix =
+                    activeGrade + '_';
+
+                const memberSuffix =
+                    '_' + memberId;
+
+
+                for (let key in checks) {
+
+                    if (
+                        key.startsWith(gradePrefix) &&
+                        key.endsWith(memberSuffix)
+                    ) {
+
+                        delete checks[key];
+
+                    }
+
+                }
+
+
+                saveData();
+
+                renderAll();
+
+
+                alert(
+                    `'${memberName}'님의 '${activeGrade}' 등급 꽃 체크 표시가 초기화되었습니다.`
+                );
+
+            }
+
+        }
+
+
+        function toggleFilterMember(id) {
+
+            selectedMemberId =
+                selectedMemberId === id
+                    ? null
+                    : id;
+
+
+            renderAll();
+
+        }
+
+
+        function onCheckChange(
+            key,
+            isChecked
+        ) {
+
+            checks[key] =
+                isChecked;
+
+
+            saveData();
+
+        }
+
+
+        function saveData() {
+
+            localStorage.setItem(
+                'guild_members',
+                JSON.stringify(members)
+            );
+
+
+            localStorage.setItem(
+                'guild_checks',
+                JSON.stringify(checks)
+            );
+
+        }
+
+
+        function renderAll() {
+
+            updateGradeCounts();
+
+            renderTags();
+
+            grades.forEach(
+                g => renderTable(g)
+            );
+
+            updateScrollWidths();
+
+        }
+
+
+        function setupScrollSync() {
+
+            grades.forEach(g => {
+
+                const topScroll =
+                    document.getElementById(
+                        `top-scroll-${g}`
+                    );
+
+
+                const bodyScroll =
+                    document.getElementById(
+                        `body-scroll-${g}`
+                    );
+
+
+                let isSyncingTop = false;
+                let isSyncingBody = false;
+
+
+                topScroll.addEventListener(
+                    'scroll',
+                    () => {
+
+                        if (!isSyncingTop) {
+
+                            isSyncingBody = true;
+
+                            bodyScroll.scrollLeft =
+                                topScroll.scrollLeft;
+
+                        }
+
+                        isSyncingTop = false;
+
+                    }
+                );
+
+
+                bodyScroll.addEventListener(
+                    'scroll',
+                    () => {
+
+                        if (!isSyncingBody) {
+
+                            isSyncingTop = true;
+
+                            topScroll.scrollLeft =
+                                bodyScroll.scrollLeft;
+
+                        }
+
+                        isSyncingBody = false;
+
+                    }
+                );
+
+            });
+
+        }
+
+
+        function updateScrollWidths() {
+
+            grades.forEach(g => {
+
+                const table =
+                    document.getElementById(
+                        `table-${g}`
+                    );
+
+
+                const topContent =
+                    document.getElementById(
+                        `top-scroll-content-${g}`
+                    );
+
+
+                if (
+                    table &&
+                    topContent
+                ) {
+
+                    topContent.style.width =
+                        table.scrollWidth + 'px';
+
+                }
+
+            });
+
+        }
+
+
+        function renderTags() {
+
+            const container =
+                document.getElementById(
+                    'memberTagList'
+                );
+
+
+            container.innerHTML = '';
+
+
+            if (
+                members.length === 0
+            ) {
+
+                container.innerHTML =
+                    '<span style="color:#888; font-size:0.85rem;">' +
+                    '등록된 길드원이 없습니다. 위에서 길드원을 추가해 주세요.' +
+                    '</span>';
+
+
+                return;
+
+            }
+
+
+            getSortedMembers(members)
+                .forEach(m => {
+
+                    const isSelected =
+                        selectedMemberId === m.id;
+
+
+                    const tag =
+                        document.createElement(
+                            'span'
+                        );
+
+
+                    tag.className =
+                        `member-tag tag-${m.role} ${isSelected ? 'selected' : ''}`;
+
+
+                    tag.addEventListener('click', () => {
+                        toggleFilterMember(m.id);
+                    });
+
+
+                    /* 체크 초기화 버튼 - 닉네임 왼쪽 */
+                    const resetBtn = document.createElement('button');
+                    resetBtn.type = 'button';
+                    resetBtn.className = 'btn-reset-member-chk';
+                    resetBtn.title = `${m.name}님 체크 초기화`;
+                    resetBtn.textContent = '🔄';
+                    resetBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        resetMemberChecks(m.id, m.name, event);
+                    });
+
+
+                    const text = document.createElement('span');
+                    text.textContent = `[${m.role}] ${m.name}`;
+
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.type = 'button';
+                    deleteBtn.className = 'btn-del-tag';
+                    deleteBtn.title = '길드원 삭제';
+                    deleteBtn.textContent = '✕';
+                    deleteBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        deleteMember(m.id, event);
+                    });
+
+
+                    tag.appendChild(resetBtn);
+                    tag.appendChild(text);
+                    tag.appendChild(deleteBtn);
+
+
+                    container.appendChild(tag);
+
+                });
+
+        }
+
+
+        function renderTable(grade) {
+
+            const table =
+                document.getElementById(
+                    `table-${grade}`
+                );
+
+
+            if (!table) {
+                return;
+            }
+
+
+            const thead =
+                table.querySelector('thead');
+
+
+            const tbody =
+                table.querySelector('tbody');
+
+
+            const sortedMembers =
+                getSortedMembers(members);
+
+
+            const activeMembers =
+                selectedMemberId
+
+                    ? sortedMembers.filter(
+                        m =>
+                            m.id ===
+                            selectedMemberId
+                    )
+
+                    : sortedMembers;
+
+
+            /* ==============================
+               길드원 필터 시 표 너비 축소
+            ============================== */
+
+            table.classList.toggle(
+                'filtered',
+                !!selectedMemberId
+            );
+
+
+            let roleRowHtml =
+                `<th class="sticky-col">직위</th>`;
+
+
+            let nameRowHtml =
+                `<th class="sticky-col">닉네임</th>`;
+
+
+            activeMembers.forEach(m => {
+
+                roleRowHtml += `
+                    <th class="role-${m.role}">
+                        ${m.role}
+                    </th>
+                `;
+
+
+                nameRowHtml += `
+                    <th class="role-${m.role}">
+                        ${m.name}
+                    </th>
+                `;
+
+            });
+
+
+            thead
+                .querySelector('.row-role')
+                .innerHTML =
+                    roleRowHtml;
+
+
+            thead
+                .querySelector('.row-name')
+                .innerHTML =
+                    nameRowHtml;
+
+
+            tbody.innerHTML = '';
+
+
+            const flowerList =
+                getFlowerList(grade);
+
+
+            flowerList.forEach(
+                (flower, index) => {
+
+                    const tr =
+                        document.createElement(
+                            'tr'
+                        );
+
+
+                    let rowHtml = `
+
+                        <td
+                            class="
+                                sticky-col
+                                flower-name
+                                flower-${grade}
+                            "
+                        >
+
+                            <button
+                                type="button"
+                                class="btn-flower-info"
+                                onclick="
+                                    showFlowerHolders(
+                                        '${grade}',
+                                        ${index},
+                                        '${flower.replace(/'/g, "\\'")}'
+                                    )
+                                "
+                            >
+                                조회
+                            </button>
+
+                            <span>
+                                ${flower}
+                            </span>
+
+                        </td>
+
+                    `;
+
+
+                    activeMembers.forEach(m => {
+
+                        const checkKey =
+                            `${grade}_${index}_${m.id}`;
+
+
+                        const isChecked =
+                            checks[checkKey]
+                                ? 'checked'
+                                : '';
+
+
+                        rowHtml += `
+
+                            <td>
+
+                                <input
+                                    type="checkbox"
+                                    class="chk-box"
+                                    ${isChecked}
+                                    onchange="
+                                        onCheckChange(
+                                            '${checkKey}',
+                                            this.checked
+                                        )
+                                    "
+                                >
+
+                            </td>
+
+                        `;
+
+                    });
+
+
+                    tr.innerHTML =
+                        rowHtml;
+
+
+                    tbody.appendChild(
+                        tr
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ==============================
+           꽃 검색
+        ============================== */
+
+
+        function openFlowerSearch() {
+
+            const modal =
+                document.getElementById(
+                    'flowerSearchModal'
+                );
+
+
+            const input =
+                document.getElementById(
+                    'flowerSearchInput'
+                );
+
+
+            modal.classList.add(
+                'active'
+            );
+
+
+            setTimeout(
+                () => input.focus(),
+                50
+            );
+
+        }
+
+
+        function closeFlowerSearch() {
+
+            document
+                .getElementById(
+                    'flowerSearchModal'
+                )
+                .classList
+                .remove(
+                    'active'
+                );
+
+        }
+
+
+        function clearFlowerSearch() {
+
+            const input =
+                document.getElementById(
+                    'flowerSearchInput'
+                );
+
+
+            const result =
+                document.getElementById(
+                    'flowerSearchResult'
+                );
+
+
+            input.value = '';
+
+
+            result.innerHTML = `
+                <div class="search-guide">
+                    검색할 꽃 이름을 입력해 주세요.
+                </div>
+            `;
+
+
+            input.focus();
+
+        }
+
+
+        function searchFlowers() {
+
+            const keyword =
+                document
+                    .getElementById(
+                        'flowerSearchInput'
+                    )
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+
+            const resultContainer =
+                document.getElementById(
+                    'flowerSearchResult'
+                );
+
+
+            if (!keyword) {
+
+                resultContainer.innerHTML = `
+                    <div class="search-guide">
+                        검색할 꽃 이름을 입력해 주세요.
+                    </div>
+                `;
+
+
+                return;
+
+            }
+
+
+            const results = [];
+
+
+            grades.forEach(grade => {
+
+                const flowerList =
+                    getFlowerList(grade);
+
+
+                flowerList.forEach(
+                    (flower, index) => {
+
+                        if (
+                            flower
+                                .toLowerCase()
+                                .includes(keyword)
+                        ) {
+
+                            results.push({
+                                grade,
+                                index,
+                                flower
+                            });
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+            if (
+                results.length === 0
+            ) {
+
+                resultContainer.innerHTML = `
+                    <div class="search-guide">
+                        검색 결과가 없습니다.
+                    </div>
+                `;
+
+
+                return;
+
+            }
+
+
+            let html = `
+                <div class="search-result-count">
+                    검색 결과
+                    <b>${results.length}개</b>
+                </div>
+            `;
+
+
+            results.forEach(item => {
+
+                html += `
+
+                    <div class="search-result-item">
+
+                        <span
+                            class="
+                                search-result-grade
+                                search-grade-${item.grade}
+                            "
+                        >
+                            ${item.grade}
+                        </span>
+
+
+                        <div class="search-result-name">
+                            ${escapeHtml(item.flower)}
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="btn-search-holder"
+                            data-grade="${item.grade}"
+                            data-index="${item.index}"
+                        >
+                            조회
+                        </button>
+
+                    </div>
+
+                `;
+
+            });
+
+
+            resultContainer.innerHTML =
+                html;
+
+
+            resultContainer
+                .querySelectorAll(
+                    '.btn-search-holder'
+                )
+                .forEach(button => {
+
+                    button.addEventListener(
+                        'click',
+                        function () {
+
+                            const grade =
+                                this.dataset.grade;
+
+
+                            const flowerIdx =
+                                Number(
+                                    this.dataset.index
+                                );
+
+
+                            const flowerName =
+                                getFlowerList(grade)[flowerIdx];
+
+
+                            closeFlowerSearch();
+
+
+                            showFlowerHolders(
+                                grade,
+                                flowerIdx,
+                                flowerName
+                            );
+
+                        }
+                    );
+
+                });
+
+        }
+
+
+        function escapeHtml(text) {
+
+            return String(text)
+
+                .replace(
+                    /&/g,
+                    '&amp;'
+                )
+
+                .replace(
+                    /</g,
+                    '&lt;'
+                )
+
+                .replace(
+                    />/g,
+                    '&gt;'
+                )
+
+                .replace(
+                    /"/g,
+                    '&quot;'
+                )
+
+                .replace(
+                    /'/g,
+                    '&#039;'
+                );
+
+        }
+
+
+        /* ==============================
+           꽃 보유 길드원 조회
+        ============================== */
+
+
+        function showFlowerHolders(
+            grade,
+            flowerIdx,
+            flowerName
+        ) {
+
+            const modal =
+                document.getElementById(
+                    'infoModal'
+                );
+
+
+            const modalTitle =
+                document.getElementById(
+                    'modalFlowerTitle'
+                );
+
+
+            const modalContent =
+                document.getElementById(
+                    'modalHolderContent'
+                );
+
+
+            modalTitle.textContent =
+                `🌸 ${flowerName}`;
+
+
+            const sortedMembers =
+                getSortedMembers(
+                    members
+                );
+
+
+            const holders =
+                sortedMembers.filter(m => {
+
+                    const key =
+                        `${grade}_${flowerIdx}_${m.id}`;
+
+
+                    return !!checks[key];
+
+                });
+
+
+            if (
+                holders.length === 0
+            ) {
+
+                modalContent.innerHTML = `
+                    <div class="empty-holder">
+                        이 꽃을 보유한 길드원이 없습니다.
+                    </div>
+                `;
+
+            }
+
+            else {
+
+                let html = `
+
+                    <div
+                        style="
+                            font-size:0.85rem;
+                            color:#666;
+                            margin-bottom:10px;
+                        "
+                    >
+                        총
+                        <b>${holders.length}명</b>
+                        보유 중:
+                    </div>
+
+                `;
+
+
+                html +=
+                    `<div class="holder-tag-list">`;
+
+
+                holders.forEach(m => {
+
+                    html += `
+                        <span
+                            class="
+                                member-tag
+                                tag-${m.role}
+                            "
+                        >
+                            [${m.role}]
+                            ${m.name}
+                        </span>
+                    `;
+
+                });
+
+
+                html +=
+                    `</div>`;
+
+
+                modalContent.innerHTML =
+                    html;
+
+            }
+
+
+            modal.classList.add(
+                'active'
+            );
+
+        }
+
+
+        function closeModal() {
+
+            document
+                .getElementById(
+                    'infoModal'
+                )
+                .classList
+                .remove(
+                    'active'
+                );
+
+        }
+
+
+        window.onclick =
+            function (event) {
+
+                const infoModal =
+                    document.getElementById(
+                        'infoModal'
+                    );
+
+
+                const searchModal =
+                    document.getElementById(
+                        'flowerSearchModal'
+                    );
+
+
+                if (
+                    event.target ===
+                    infoModal
+                ) {
+
+                    closeModal();
+
+                }
+
+
+                if (
+                    event.target ===
+                    searchModal
+                ) {
+
+                    closeFlowerSearch();
+
+                }
+
+            };
+
+    </script>
+
+
+
+<!-- ===== 뷰포트 고정 직위/닉네임 + 횡스크롤 테스트 ===== -->
+<style>
+    #viewportFixedGuildHeader {
+        display: none;
+        position: fixed;
+        z-index: 500;
+        background: #fff;
+        border: 1px solid #333;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,.16);
+        overflow: hidden;
+    }
+    #viewportFixedGuildHeader.is-visible { display: block; }
+    #viewportFixedGuildToolbar {
+        display: flex;
+        gap: 8px;
+        padding: 8px 10px;
+        background: #f9f9f9;
+        border-bottom: 1px solid #aaa;
+    }
+    #viewportFixedGuildToolbar button {
+        padding: 7px 12px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        font-family: 'Gowun Batang', serif;
+        font-size: .85rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    #viewportFixedSearchButton {
+        flex: 1;
+        background: #fff0f0;
+    }
+    #viewportFixedSearchButton:hover { background: #fae0e0; }
+    #viewportFixedTopButton {
+        flex: 0 0 auto;
+        background: #fff;
+    }
+    #viewportFixedTopButton:hover { background: #f1f1f1; }
+    #viewportFixedGuildScroll {
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 18px;
+        background: #f1f1f1;
+        border-bottom: 1px solid #aaa;
+    }
+    #viewportFixedGuildScrollContent { height: 1px; }
+    #viewportFixedGuildRows {
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        background: #fff;
+    }
+    #viewportFixedGuildRows::-webkit-scrollbar { display: none; }
+    #viewportFixedGuildTable {
+        border-collapse: separate;
+        border-spacing: 0;
+        white-space: nowrap;
+        background: #fff;
+    }
+    #viewportFixedGuildTable th {
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        padding: 8px 12px;
+        text-align: center;
+        font-size: .9rem;
+        min-width: 90px;
+        box-sizing: border-box;
+        background: #fff;
+    }
+    #viewportFixedGuildTable th.sticky-col {
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        min-width: 280px;
+        width: 280px;
+        background: #f8f9fa !important;
+        border-right: 2px solid #333 !important;
+    }
+</style>
+
+<div id="viewportFixedGuildHeader" aria-hidden="true">
+    <div id="viewportFixedGuildToolbar">
+        <button type="button" id="viewportFixedSearchButton">🔎 꽃 검색창 열기</button>
+        <button type="button" id="viewportFixedTopButton" title="페이지 최상단으로 이동">⬆ 맨 위로</button>
+    </div>
+    <div id="viewportFixedGuildScroll"><div id="viewportFixedGuildScrollContent"></div></div>
+    <div id="viewportFixedGuildRows">
+        <table id="viewportFixedGuildTable"><thead></thead></table>
+    </div>
+</div>
+
+<script>
+(function () {
+    const fixedBox = document.getElementById('viewportFixedGuildHeader');
+    const fixedScroll = document.getElementById('viewportFixedGuildScroll');
+    const fixedScrollContent = document.getElementById('viewportFixedGuildScrollContent');
+    const fixedRows = document.getElementById('viewportFixedGuildRows');
+    const fixedTable = document.getElementById('viewportFixedGuildTable');
+    const fixedSearchButton = document.getElementById('viewportFixedSearchButton');
+    const fixedTopButton = document.getElementById('viewportFixedTopButton');
+    let syncing = false;
+    let currentBody = null;
+
+    // 고정 툴바 버튼
+    fixedSearchButton.addEventListener('click', function () {
+        // 원본 openFlowerSearch 함수 호출 여부와 상관없이
+        // 고정 버튼에서 검색 모달을 직접 열도록 처리
+        const modal = document.getElementById('flowerSearchModal');
+        const input = document.getElementById('flowerSearchInput');
+        if (!modal) return;
+
+        modal.classList.add('active');
+        // 고정 헤더보다 검색 모달이 항상 위에 표시되도록 보장
+        modal.style.zIndex = '2000';
+
+        if (input) {
+            setTimeout(function () {
+                input.focus();
+            }, 50);
+        }
+    });
+
+    fixedTopButton.addEventListener('click', function () {
+        // 브라우저/로컬 HTML 환경에서도 확실하게 최상단으로 이동
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        window.scrollTo(0, 0);
+        requestAnimationFrame(updateFixedHeader);
+    });
+
+    function getActiveGrade() {
+        const active = document.querySelector('.tab-content.active');
+        return active ? active.id.replace('grade-', '') : null;
+    }
+
+    function copyHeader(table) {
+        const thead = table.querySelector('thead');
+        if (!thead) return;
+        fixedTable.querySelector('thead').innerHTML = thead.innerHTML;
+        fixedTable.style.width = table.scrollWidth + 'px';
+        fixedScrollContent.style.width = table.scrollWidth + 'px';
+
+        // 실제 표의 열 너비를 그대로 복제
+        const sourceRows = thead.querySelectorAll('tr');
+        const cloneRows = fixedTable.querySelectorAll('tr');
+        sourceRows.forEach((row, r) => {
+            const srcCells = row.children;
+            const dstCells = cloneRows[r] ? cloneRows[r].children : [];
+            Array.from(srcCells).forEach((cell, i) => {
+                if (dstCells[i]) {
+                    const w = cell.getBoundingClientRect().width;
+                    dstCells[i].style.width = w + 'px';
+                    dstCells[i].style.minWidth = w + 'px';
+                    dstCells[i].style.maxWidth = w + 'px';
+                }
+            });
+        });
+    }
+
+    function syncFromBody() {
+        if (!currentBody || syncing) return;
+        syncing = true;
+        fixedScroll.scrollLeft = currentBody.scrollLeft;
+        fixedRows.scrollLeft = currentBody.scrollLeft;
+        syncing = false;
+    }
+
+    function updateFixedHeader() {
+        const grade = getActiveGrade();
+        if (!grade) return;
+        const wrapper = document.querySelector('#grade-' + grade + ' .table-wrapper');
+        const table = document.getElementById('table-' + grade);
+        const body = document.getElementById('body-scroll-' + grade);
+        if (!wrapper || !table || !body) return;
+
+        currentBody = body;
+        const rect = wrapper.getBoundingClientRect();
+        const headerHeight = table.querySelector('thead')?.getBoundingClientRect().height || 70;
+        const shouldShow = rect.top < 0 && rect.bottom > (headerHeight + 22);
+
+        if (!shouldShow) {
+            fixedBox.classList.remove('is-visible');
+            return;
+        }
+
+        fixedBox.style.left = rect.left + 'px';
+        fixedBox.style.top = '0px';
+        fixedBox.style.width = rect.width + 'px';
+        copyHeader(table);
+        fixedBox.classList.add('is-visible');
+        syncFromBody();
+    }
+
+    fixedScroll.addEventListener('scroll', function () {
+        if (!currentBody || syncing) return;
+        syncing = true;
+        currentBody.scrollLeft = fixedScroll.scrollLeft;
+        fixedRows.scrollLeft = fixedScroll.scrollLeft;
+        const grade = getActiveGrade();
+        const top = grade && document.getElementById('top-scroll-' + grade);
+        if (top) top.scrollLeft = fixedScroll.scrollLeft;
+        syncing = false;
+    });
+
+    fixedRows.addEventListener('scroll', function () {
+        if (!currentBody || syncing) return;
+        syncing = true;
+        currentBody.scrollLeft = fixedRows.scrollLeft;
+        fixedScroll.scrollLeft = fixedRows.scrollLeft;
+        syncing = false;
+    });
+
+    grades.forEach(g => {
+        const body = document.getElementById('body-scroll-' + g);
+        if (body) body.addEventListener('scroll', syncFromBody);
+    });
+
+    window.addEventListener('scroll', updateFixedHeader, {passive:true});
+    window.addEventListener('resize', updateFixedHeader);
+    document.addEventListener('click', () => setTimeout(updateFixedHeader, 0));
+
+    const oldRenderAll = window.renderAll;
+    if (typeof oldRenderAll === 'function') {
+        window.renderAll = function () {
+            oldRenderAll.apply(this, arguments);
+            setTimeout(updateFixedHeader, 0);
+        };
+    }
+
+    setTimeout(updateFixedHeader, 0);
+})();
+</script>
+
+</body>
+
+</html>
