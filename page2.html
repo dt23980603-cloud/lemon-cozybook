@@ -1155,70 +1155,26 @@
     </div>
 
 
-    <!-- 꽃 상세 정보 모달 (붉은 장미 테스트) -->
+    <!-- 꽃 상세 정보 모달 -->
     <div class="modal-overlay" id="flowerDetailModal" style="z-index: 1200;">
-
         <div class="flower-detail-card">
-
             <div class="modal-header">
-
                 <div class="modal-title">🌹 꽃 정보</div>
-
-                <button
-                    type="button"
-                    class="modal-close"
-                    onclick="closeFlowerDetail()"
-                >
-                    ✕
-                </button>
-
+                <button type="button" class="modal-close" onclick="closeFlowerDetail()">✕</button>
             </div>
-
             <div class="flower-detail-layout">
-
-                <img
-                    src="images/flowers/F0260.webp"
-                    alt="붉은 장미"
-                    class="flower-detail-image"
-                >
-
+                <img id="flowerDetailImage" src="" alt="" class="flower-detail-image">
                 <div class="flower-detail-info">
-                    <div class="flower-detail-name">붉은 장미</div>
-
-                    <div class="flower-detail-row">
-                        <span class="flower-detail-label">등급</span>
-                        <span>N</span>
-                    </div>
-
-                    <div class="flower-detail-row">
-                        <span class="flower-detail-label">길드전</span>
-                        <span>9점</span>
-                    </div>
-
-                    <div class="flower-detail-row">
-                        <span class="flower-detail-label">획득</span>
-                        <span>기본 획득 · 획득 가능</span>
-                    </div>
-
-                    <div class="flower-detail-row">
-                        <span class="flower-detail-label">도감 조건</span>
-                        <span>레벨 01 해제</span>
-                    </div>
-
-                    <div class="flower-detail-row">
-                        <span class="flower-detail-label">비고</span>
-                        <span>🎫 무과금 가능</span>
-                    </div>
-
-                    <div class="flower-detail-source">
-                        이미지·꽃 정보 참고: 코지 꽃수첩 (thecozybook.pages.dev)
-                    </div>
+                    <div id="flowerDetailName" class="flower-detail-name"></div>
+                    <div class="flower-detail-row"><span class="flower-detail-label">등급</span><span id="flowerDetailGrade"></span></div>
+                    <div class="flower-detail-row"><span class="flower-detail-label">길드전</span><span id="flowerDetailScore"></span></div>
+                    <div class="flower-detail-row"><span class="flower-detail-label">획득</span><span id="flowerDetailAcquire"></span></div>
+                    <div class="flower-detail-row"><span class="flower-detail-label">도감 조건</span><span id="flowerDetailUnlock"></span></div>
+                    <div class="flower-detail-row"><span class="flower-detail-label">비고</span><span id="flowerDetailNote"></span></div>
+                    <div class="flower-detail-source">이미지·꽃 정보 참고: 코지 꽃수첩 (thecozybook.pages.dev)</div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 
@@ -1246,6 +1202,8 @@
     </div>
 
 
+    <script src="flower-data.js"></script>
+
     <script>
 
         const grades = ['N', 'R', 'SR', 'SSR', 'UR'];
@@ -1263,77 +1221,9 @@
            꽃 데이터
         ========================= */
 
-        const defaultNFlowers = [
-            "[레벨 01 해제] 붉은 장미",
-            "[레벨 01 해제] 은방울꽃",
-            "[레벨 03 해제] 자색 도라지",
-            "[레벨 04 해제] 노란 장미",
-            "[레벨 05 해제] 카네이션",
-            "[레벨 06 해제] 노란 튤립",
-            "[레벨 07 해제] 제비꽃",
-            "[레벨 08 해제] 분홍 튤립",
-            "[레벨 09 해제] 호접란",
-            "[레벨 10 해제] 분홍 장미",
-            "[레벨 11 해제] 흰 백합",
-            "[레벨 12 해제] 데이지",
-            "[레벨 13 해제] 분홍 백합",
-            "[레벨 14 해제] 푸른별꽃",
-            "[레벨 15 해제] 노란 백합",
-            "[레벨 16 해제] 자색 수국",
-            "[레벨 17 해제] 동백꽃",
-            "[레벨 18 해제] 분홍 수국",
-            "[레벨 19 해제] 구즈마니아",
-            "[레벨 20 해제] 파란 수국",
-            "[레벨 21 해제] 해바라기",
-            "[레벨 22 해제] 프리지아",
-            "[레벨 23 해제] 금술 국화",
-            "[레벨 24 해제] 수선화",
-            "[레벨 25 해제] 거베라",
-            "[레벨 26 해제] 붉은 카라",
-            "[레벨 27 해제] 초롱꽃",
-            "[레벨 28 해제] 노란 카라",
-            "[레벨 29 해제] 민들레",
-            "[레벨 30 해제] 자색 카라",
-            "[레벨 31 해제] 연보라 히아신스",
-            "[레벨 32 해제] 자귀나무꽃",
-            "[레벨 33 해제] 연분홍 히아신스",
-            "[레벨 34 해제] 재스민",
-            "[레벨 35 해제] 연노랑 히아신스",
-            "[레벨 36 해제] 황금 여의 국화",
-            "[레벨 37 해제] 치자꽃",
-            "[레벨 38 해제] 연분홍 여의 국화",
-            "[레벨 39 해제] 분홍 복사꽃",
-            "[레벨 40 해제] 연귤색 여의 국화",
-            "[레벨 41 해제] 비취 리시안셔스",
-            "[레벨 42 해제] 자운 라일락",
-            "[레벨 43 해제] 붉은구름 리시안셔스",
-            "[레벨 44 해제] 연노랑 라일락",
-            "[레벨 45 해제] 호박 리시안셔스",
-            "[레벨 46 해제] 자홍색 부겐빌레아",
-            "[레벨 47 해제] 물망초",
-            "[레벨 48 해제] 연노랑 부겐빌레아",
-            "[레벨 49 해제] 설흔 구리향",
-            "[레벨 50 해제] 연벚꽃 부겐빌레아",
-            "[레벨 51 해제] 탐스러운 덩굴장미",
-            "[레벨 52 해제] 성심 백합",
-            "[레벨 53 해제] 자색 폭스테일",
-            "[레벨 54 해제] 서리꽃 석곡",
-            "[레벨 55 해제] 분홍색 폭스테일",
-            "[레벨 56 해제] 청백 로벨리아",
-            "[레벨 57 해제] 노란 폭스테일",
-            "[레벨 58 해제] 자색 괭이밥",
-            "[레벨 59 해제] 주황색 괭이밥",
-            "[레벨 60 해제] 빛나는 노란 괭이밥",
-            "[레벨 61 해제] 눈꽃 용토주",
-            "[레벨 62 해제] 금잔 금관화",
-            "[레벨 63 해제] 안개 분홍 신부화",
-            "[레벨 64 해제] 진홍 벚꽃 용토주",
-            "[레벨 65 해제] 주황 불꽃 금관화",
-            "[레벨 66 해제] 구름 베일 신부화",
-            "[레벨 67 해제] 보랏빛 베일 용토주",
-            "[레벨 68 해제] 진홍 불꽃 금관화",
-            "[레벨 69 해제] 노을빛 신부꽃"
-        ];
+        const defaultNFlowers = (window.FLOWER_MASTER_DATA || [])
+            .filter(item => item.grade === 'N')
+            .map(item => item.listName);
 
 
         const defaultRFlowers = [
@@ -2690,11 +2580,12 @@
                             `;
                         })()}
 
-                        ${item.grade === 'N' && item.flower.includes('붉은 장미') ? `
+                        ${getMasterFlowerByListName(item.grade, item.flower) ? `
                             <button
                                 type="button"
                                 class="btn-search-open"
-                                data-flower="red-rose"
+                                data-grade="${item.grade}"
+                                data-flower-name="${escapeHtml(item.flower)}"
                             >
                                 열기
                             </button>
@@ -2729,7 +2620,10 @@
                     button.addEventListener(
                         'click',
                         function () {
-                            openFlowerDetail();
+                            openFlowerDetail(
+                                this.dataset.grade,
+                                this.dataset.flowerName
+                            );
                         }
                     );
 
@@ -2830,19 +2724,37 @@
         }
 
 
-        function openFlowerDetail() {
-            document
-                .getElementById('flowerDetailModal')
-                .classList
-                .add('active');
+        function getMasterFlowerByListName(grade, flowerListName) {
+            return (window.FLOWER_MASTER_DATA || []).find(item =>
+                item.grade === grade && item.listName === flowerListName
+            );
+        }
+
+
+        function openFlowerDetail(grade, flowerListName) {
+            const flower = getMasterFlowerByListName(grade, flowerListName);
+            if (!flower) return;
+
+            const image = document.getElementById('flowerDetailImage');
+            image.src = flower.image;
+            image.alt = flower.name;
+            image.onerror = function () {
+                this.onerror = null;
+                this.src = flower.imageRemote;
+            };
+
+            document.getElementById('flowerDetailName').textContent = flower.name;
+            document.getElementById('flowerDetailGrade').textContent = flower.grade;
+            document.getElementById('flowerDetailScore').textContent = `${flower.guildScore}점`;
+            document.getElementById('flowerDetailAcquire').textContent = flower.acquire;
+            document.getElementById('flowerDetailUnlock').textContent = flower.unlock;
+            document.getElementById('flowerDetailNote').textContent = flower.note;
+            document.getElementById('flowerDetailModal').classList.add('active');
         }
 
 
         function closeFlowerDetail() {
-            document
-                .getElementById('flowerDetailModal')
-                .classList
-                .remove('active');
+            document.getElementById('flowerDetailModal').classList.remove('active');
         }
 
 
