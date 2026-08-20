@@ -189,6 +189,37 @@
         .btn-add:hover {
             background-color: #ffd94e;
         }
+
+        .btn-edit {
+            background-color: #ffffff;
+            border: 1px solid #777;
+            padding: 4px 9px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-cancel-edit {
+            display: none;
+            background-color: #f5f5f5;
+            border: 1px solid #aaa;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .edit-guide {
+            display: none;
+            margin-top: 2px;
+            color: #777;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 
@@ -228,10 +259,11 @@
                 <table id="updateTable">
                     <thead>
                         <tr>
-                            <th style="width: 22%;">수정 일자</th>
-                            <th style="width: 18%;">분류</th>
-                            <th style="width: 42%;">내용</th>
-                            <th style="width: 18%;">꽃 등급</th>
+                            <th style="width: 18%;">수정 일자</th>
+                            <th style="width: 16%;">분류</th>
+                            <th style="width: 40%;">내용</th>
+                            <th style="width: 14%;">꽃 등급</th>
+                            <th style="width: 12%;">관리</th>
                         </tr>
                     </thead>
                     <tbody id="updateTbody">
@@ -242,7 +274,7 @@
 
             <!-- 내용 등록 입력 폼 -->
             <div class="add-form-card">
-                <div style="font-weight: bold; font-size: 0.95rem;">➕ 업데이트 내역 추가</div>
+                <div id="formTitle" style="font-weight: bold; font-size: 0.95rem;">➕ 업데이트 내역 추가</div>
                 <div class="form-row">
                     <input type="text" id="inputCategory" class="input-category" placeholder="분류">
                     <input type="text" id="inputContent" class="input-content" placeholder="업데이트 내용">
@@ -254,8 +286,10 @@
                         <option value="SSR" style="background-color: #fff2cc;">SSR</option>
                         <option value="UR" style="background-color: #f4cccc;">UR</option>
                     </select>
-                    <button type="button" class="btn-add" onclick="addUpdateRow()">등록</button>
+                    <button type="button" class="btn-add" id="btnSaveUpdate" onclick="saveUpdateRow()">등록</button>
+                    <button type="button" class="btn-cancel-edit" id="btnCancelEdit" onclick="cancelEdit()">취소</button>
                 </div>
+                <div class="edit-guide" id="editGuide">※ 등록된 꽃 이름 수정 시 길드 꽃 도감에도 자동으로 반영됩니다. 등급은 수정 중 변경할 수 없습니다.<br>※ 수정 모드에서 분류와 내용을 모두 비운 뒤 '수정 저장'을 누르면 해당 꽃이 삭제됩니다.</div>
             </div>
         </div>
     </div>
@@ -281,13 +315,27 @@
 
 
 
+        let editingIndex = null;
+
         // 페이지 시작 시 기존 저장 내역 불러와서 표에 그리기
         window.onload = function () {
             renderTable();
         };
 
-        // 행 추가 함수
-        function addUpdateRow() {
+        function getTodayString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function makeFlowerName(category, content) {
+            return category ? `[${category}] ${content}` : content;
+        }
+
+        // 등록 / 수정 저장 공용 함수
+        function saveUpdateRow() {
             const categoryInput = document.getElementById('inputCategory');
             const contentInput = document.getElementById('inputContent');
             const gradeSelect = document.getElementById('selectGrade');
@@ -296,47 +344,209 @@
             const content = contentInput.value.trim();
             const grade = gradeSelect.value;
 
+            // 수정 모드에서 분류와 내용을 모두 비우면 해당 추가 꽃을 삭제
+            if (editingIndex !== null && !category && !content) {
+                const oldItem = updateList[editingIndex];
+                if (!oldItem) {
+                    cancelEdit();
+                    return;
+                }
+
+                const oldCategory = oldItem.category === '-' ? '' : oldItem.category;
+                const oldFlowerName = makeFlowerName(oldCategory, oldItem.content);
+                const oldGrade = oldItem.grade;
+
+                if (!confirm(`'${oldFlowerName}' 꽃을 목록에서 삭제하시겠습니까?`)) {
+                    return;
+                }
+
+                const flowerIndex = customFlowers.findIndex(f =>
+                    f.grade === oldGrade && f.name === oldFlowerName
+                );
+
+                if (flowerIndex === -1) {
+                    alert('도감에 연결된 추가 꽃 데이터를 찾지 못했습니다.');
+                    return;
+                }
+
+                // page2의 체크 키가 등급_꽃인덱스_길드원ID 구조이므로,
+                // 삭제되는 추가 꽃 뒤의 체크 인덱스를 한 칸씩 당겨 기존 체크 상태를 유지합니다.
+                const baseFlowerCounts = {
+                    N: 69,
+                    R: 75,
+                    SR: 118,
+                    SSR: 59,
+                    UR: 21
+                };
+
+                const sameGradeBeforeCount = customFlowers
+                    .slice(0, flowerIndex)
+                    .filter(f => f && f.grade === oldGrade).length;
+
+                const deletedTableIndex = (baseFlowerCounts[oldGrade] || 0) + sameGradeBeforeCount;
+                const checks = JSON.parse(localStorage.getItem('guild_checks')) || {};
+                const shiftedChecks = {};
+
+                Object.entries(checks).forEach(([key, value]) => {
+                    const match = key.match(/^([^_]+)_(\d+)_(.+)$/);
+                    if (!match) {
+                        shiftedChecks[key] = value;
+                        return;
+                    }
+
+                    const [, gradeKey, indexText, memberId] = match;
+                    const flowerIndexNumber = Number(indexText);
+
+                    if (gradeKey !== oldGrade) {
+                        shiftedChecks[key] = value;
+                        return;
+                    }
+
+                    if (flowerIndexNumber === deletedTableIndex) {
+                        return; // 삭제한 꽃의 체크 정보 제거
+                    }
+
+                    if (flowerIndexNumber > deletedTableIndex) {
+                        shiftedChecks[`${gradeKey}_${flowerIndexNumber - 1}_${memberId}`] = value;
+                    } else {
+                        shiftedChecks[key] = value;
+                    }
+                });
+
+                customFlowers.splice(flowerIndex, 1);
+                updateList.splice(editingIndex, 1);
+
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
+                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                localStorage.setItem('guild_checks', JSON.stringify(shiftedChecks));
+
+                renderTable();
+                cancelEdit(false);
+                alert(`'${oldFlowerName}' 꽃이 삭제되었습니다.`);
+                return;
+            }
+
             if (!content) {
                 alert('내용을 입력해 주세요!');
                 return;
             }
 
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const formattedDate = `${year}-${month}-${day}`;
+            const formattedFlowerName = makeFlowerName(category, content);
 
-            // 꽃 이름 형식을 [분류] 내용 (분류가 없으면 내용만)으로 설정
-            const formattedFlowerName = category ? `[${category}] ${content}` : content;
+            if (editingIndex === null) {
+                const exists = customFlowers.some(f => f.name === formattedFlowerName && f.grade === grade);
+                if (exists) {
+                    alert('같은 등급에 이미 등록된 꽃입니다.');
+                    return;
+                }
 
-            // 업데이트 내역 배열 상단에 추가
-            updateList.unshift({
-                date: formattedDate,
-                category: category || '-',
-                content: content,
-                grade: grade
-            });
+                updateList.unshift({
+                    date: getTodayString(),
+                    category: category || '-',
+                    content: content,
+                    grade: grade
+                });
 
-            // 꽃 도감 연동용 데이터 배열에 추가 (중복 등록 방지)
-            const exists = customFlowers.some(f => f.name === formattedFlowerName && f.grade === grade);
-            if (!exists) {
                 customFlowers.push({
                     grade: grade,
                     name: formattedFlowerName
                 });
+            } else {
+                const oldItem = updateList[editingIndex];
+                if (!oldItem) {
+                    cancelEdit();
+                    return;
+                }
+
+                const oldCategory = oldItem.category === '-' ? '' : oldItem.category;
+                const oldFlowerName = makeFlowerName(oldCategory, oldItem.content);
+                const oldGrade = oldItem.grade;
+
+                const duplicate = customFlowers.some(f =>
+                    f.grade === oldGrade &&
+                    f.name === formattedFlowerName &&
+                    !(f.grade === oldGrade && f.name === oldFlowerName)
+                );
+
+                if (duplicate) {
+                    alert('같은 등급에 이미 등록된 꽃 이름입니다.');
+                    return;
+                }
+
+                const flowerIndex = customFlowers.findIndex(f =>
+                    f.grade === oldGrade && f.name === oldFlowerName
+                );
+
+                if (flowerIndex === -1) {
+                    alert('도감에 연결된 추가 꽃 데이터를 찾지 못했습니다.');
+                    return;
+                }
+
+                customFlowers[flowerIndex] = {
+                    ...customFlowers[flowerIndex],
+                    grade: oldGrade,
+                    name: formattedFlowerName
+                };
+
+                updateList[editingIndex] = {
+                    ...oldItem,
+                    date: getTodayString(),
+                    category: category || '-',
+                    content: content,
+                    grade: oldGrade
+                };
             }
 
-            // 2. localStorage에 각각 저장
             localStorage.setItem('guild_update_list', JSON.stringify(updateList));
             localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
 
-            // 화면 다시 그리기 & 입력란 초기화
             renderTable();
+            cancelEdit(false);
+        }
 
-            categoryInput.value = '';
-            contentInput.value = '';
-            gradeSelect.value = 'N';
+        function startEdit(index) {
+            const item = updateList[index];
+            if (!item) return;
+
+            editingIndex = index;
+
+            document.getElementById('inputCategory').value = item.category === '-' ? '' : item.category;
+            document.getElementById('inputContent').value = item.content;
+
+            const gradeSelect = document.getElementById('selectGrade');
+            gradeSelect.value = item.grade;
+            gradeSelect.disabled = true;
+            updateSelectColor(gradeSelect);
+
+            document.getElementById('formTitle').textContent = '✏️ 등록 꽃 수정';
+            document.getElementById('btnSaveUpdate').textContent = '수정 저장';
+            document.getElementById('btnCancelEdit').style.display = 'inline-block';
+            document.getElementById('editGuide').style.display = 'block';
+            document.getElementById('inputContent').focus();
+        }
+
+        function cancelEdit(clearInputs = true) {
+            editingIndex = null;
+
+            const gradeSelect = document.getElementById('selectGrade');
+            gradeSelect.disabled = false;
+
+            document.getElementById('formTitle').textContent = '➕ 업데이트 내역 추가';
+            document.getElementById('btnSaveUpdate').textContent = '등록';
+            document.getElementById('btnCancelEdit').style.display = 'none';
+            document.getElementById('editGuide').style.display = 'none';
+
+            if (clearInputs) {
+                document.getElementById('inputCategory').value = '';
+                document.getElementById('inputContent').value = '';
+                gradeSelect.value = 'N';
+            } else {
+                document.getElementById('inputCategory').value = '';
+                document.getElementById('inputContent').value = '';
+                gradeSelect.value = 'N';
+            }
+
+            updateSelectColor(gradeSelect);
         }
 
         // 전체 초기화 함수 (업데이트 내역 표만 삭제, 꽃 도감 데이터는 유지)
@@ -350,6 +560,7 @@
                 updateList = [];
                 localStorage.removeItem('guild_update_list'); // 업데이트 내역 목록만 삭제
                 renderTable();
+                cancelEdit();
             }
         }
 
@@ -359,17 +570,18 @@
             tbody.innerHTML = '';
 
             if (updateList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
                 return;
             }
 
-            updateList.forEach(item => {
+            updateList.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
           <td>${item.date}</td>
           <td>${item.category}</td>
           <td style="text-align: left; padding-left: 10px;">${item.content}</td>
           <td>${item.grade}</td>
+          <td><button type="button" class="btn-edit" onclick="startEdit(${index})">수정</button></td>
         `;
                 tbody.appendChild(tr);
             });
