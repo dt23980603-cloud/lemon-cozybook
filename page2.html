@@ -498,9 +498,34 @@
 
         .holder-tag-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
+            flex-direction: column;
+            gap: 0;
+            padding-right: 8px;
         }
+
+        .holder-list-item {
+            display: block;
+            padding: 8px 2px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.92rem;
+            color: #333;
+            line-height: 1.35;
+        }
+
+        .holder-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .holder-role {
+            margin-right: 6px;
+            font-weight: 600;
+        }
+
+        .holder-role-길드장 { color: #b3261e; }
+        .holder-role-부길드장 { color: #9a6700; }
+        .holder-role-임원 { color: #7b3f98; }
+        .holder-role-정예 { color: #1976a3; }
+        .holder-role-멤버 { color: #3f7d3a; }
 
         .empty-holder {
             color: #888;
@@ -2910,15 +2935,9 @@
                 holders.forEach(m => {
 
                     html += `
-                        <span
-                            class="
-                                member-tag
-                                tag-${m.role}
-                            "
-                        >
-                            [${m.role}]
-                            ${m.name}
-                        </span>
+                        <div class="holder-list-item">
+                            <span class="holder-role holder-role-${m.role}">[${m.role}]</span>${m.name}
+                        </div>
                     `;
 
                 });
