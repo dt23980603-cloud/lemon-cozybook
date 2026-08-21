@@ -1,8 +1,0 @@
-전체v14 정식 후보본
-- 기준: 전체v13 정식본
-- 반영: 데모에서 검증한 체크박스 개별 PATCH 저장 방식
-- 체크 동기화 polling: 약 1초
-- 운영 D1 state id: main 유지
-- 운영 localStorage key 유지 (demo_ namespace 없음)
-- 기존 운영 데이터 유지
-- 신규 꽃/업데이트 내역/길드원 공유 기능은 v13 그대로 유지
