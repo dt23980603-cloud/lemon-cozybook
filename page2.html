@@ -2043,6 +2043,7 @@
 
 
             saveData();
+            renderAll();
 
         }
 
@@ -2346,6 +2347,22 @@
         }
 
 
+        function getMemberGradeCheckCount(grade, memberId) {
+
+            const flowerList = getFlowerList(grade);
+            let count = 0;
+
+            flowerList.forEach((flower, index) => {
+                const checkKey = `${grade}_${index}_${memberId}`;
+                if (checks[checkKey]) {
+                    count += 1;
+                }
+            });
+
+            return count;
+        }
+
+
         function renderTable(grade) {
 
             const table =
@@ -2406,9 +2423,13 @@
                 `;
 
 
+                const checkedCount =
+                    getMemberGradeCheckCount(grade, m.id);
+
+
                 nameRowHtml += `
                     <th class="role-${m.role}">
-                        ${m.name}
+                        ${m.name} (${checkedCount})
                     </th>
                 `;
 
