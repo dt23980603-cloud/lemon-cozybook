@@ -348,8 +348,8 @@
             min-width: 0;
         }
 
-        .sheet-table.filtered th:not(.sticky-col),
-        .sheet-table.filtered td:not(.sticky-col) {
+        .sheet-table.filtered th:not(.sticky-col):not(.flower-query-col),
+        .sheet-table.filtered td:not(.sticky-col):not(.flower-query-col) {
             width: 120px;
             min-width: 120px;
         }
@@ -369,13 +369,27 @@
             position: sticky;
             left: 0;
             z-index: 5;
-            min-width: 280px;
-            width: 280px;
+            min-width: 230px;
+            width: 230px;
             box-sizing: border-box;
             border-right: 2px solid #333 !important;
         }
 
-        th.sticky-col {
+        .sheet-table .flower-query-col {
+            position: sticky;
+            left: 230px;
+            z-index: 5;
+            min-width: 64px;
+            width: 64px;
+            box-sizing: border-box;
+            padding-left: 6px;
+            padding-right: 6px;
+            background-color: #fff;
+            border-right: 1px solid #ccc !important;
+        }
+
+        th.sticky-col,
+        th.flower-query-col {
             background-color: #f8f9fa !important;
             z-index: 6;
             font-weight: bold;
@@ -388,6 +402,21 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .flower-action-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            vertical-align: middle;
+            margin-right: 12px;
+        }
+
+        .flower-action-group .btn-flower-info,
+        .flower-action-group .btn-search-open {
+            margin: 0;
+            vertical-align: middle;
         }
 
         td.flower-name.flower-N {
@@ -418,12 +447,16 @@
         }
 
         .btn-flower-info {
+            width: 42px;
+            min-width: 42px;
+            height: 26px;
+            box-sizing: border-box;
             background-color: #ffffff;
             border: 1px solid #666;
             border-radius: 4px;
             font-size: 0.75rem;
-            padding: 2px 6px;
-            margin-right: 6px;
+            padding: 0;
+            margin-right: 4px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.15s ease;
@@ -679,8 +712,12 @@
         }
 
         .btn-search-holder {
-            flex-shrink: 0;
-            padding: 4px 9px;
+            flex: 0 0 76px;
+            width: 76px;
+            min-width: 76px;
+            height: 32px;
+            box-sizing: border-box;
+            padding: 0;
             background-color: #fff;
             border: 1px solid #666;
             border-radius: 4px;
@@ -709,11 +746,14 @@
         }
 
         .btn-search-check {
-            flex: 0 0 auto;
-            min-width: 64px;
-            padding: 7px 10px;
+            flex: 0 0 76px;
+            width: 76px;
+            min-width: 76px;
+            height: 32px;
+            box-sizing: border-box;
+            padding: 0;
             border: 1px solid #d7bfc3;
-            border-radius: 8px;
+            border-radius: 4px;
             background: #fff0f1;
             color: #5e4448;
             font-family: inherit;
@@ -740,9 +780,13 @@
         }
 
         .btn-search-open {
-            flex-shrink: 0;
-            padding: 4px 9px;
-            background-color: #fff0f0;
+            flex: 0 0 42px;
+            width: 42px;
+            min-width: 42px;
+            height: 26px;
+            box-sizing: border-box;
+            padding: 0;
+            background-color: #ffffff;
             border: 1px solid #666;
             border-radius: 4px;
             font-size: 0.78rem;
@@ -752,7 +796,8 @@
         }
 
         .btn-search-open:hover {
-            background-color: #fae0e0;
+            background-color: #333;
+            color: #fff;
         }
 
         .flower-detail-card {
@@ -939,11 +984,13 @@
 
                         <thead>
                             <tr class="row-role">
-                                <th class="sticky-col">직위</th>
+                                <th class="sticky-col"></th>
+                                <th class="flower-query-col">직위</th>
                             </tr>
 
                             <tr class="row-name">
-                                <th class="sticky-col">닉네임</th>
+                                <th class="sticky-col">꽃 이름</th>
+                                <th class="flower-query-col">닉네임</th>
                             </tr>
                         </thead>
 
@@ -973,11 +1020,13 @@
 
                         <thead>
                             <tr class="row-role">
-                                <th class="sticky-col">직위</th>
+                                <th class="sticky-col"></th>
+                                <th class="flower-query-col">직위</th>
                             </tr>
 
                             <tr class="row-name">
-                                <th class="sticky-col">닉네임</th>
+                                <th class="sticky-col">꽃 이름</th>
+                                <th class="flower-query-col">닉네임</th>
                             </tr>
                         </thead>
 
@@ -1007,11 +1056,13 @@
 
                         <thead>
                             <tr class="row-role">
-                                <th class="sticky-col">직위</th>
+                                <th class="sticky-col"></th>
+                                <th class="flower-query-col">직위</th>
                             </tr>
 
                             <tr class="row-name">
-                                <th class="sticky-col">닉네임</th>
+                                <th class="sticky-col">꽃 이름</th>
+                                <th class="flower-query-col">닉네임</th>
                             </tr>
                         </thead>
 
@@ -1041,11 +1092,13 @@
 
                         <thead>
                             <tr class="row-role">
-                                <th class="sticky-col">직위</th>
+                                <th class="sticky-col"></th>
+                                <th class="flower-query-col">직위</th>
                             </tr>
 
                             <tr class="row-name">
-                                <th class="sticky-col">닉네임</th>
+                                <th class="sticky-col">꽃 이름</th>
+                                <th class="flower-query-col">닉네임</th>
                             </tr>
                         </thead>
 
@@ -1075,11 +1128,13 @@
 
                         <thead>
                             <tr class="row-role">
-                                <th class="sticky-col">직위</th>
+                                <th class="sticky-col"></th>
+                                <th class="flower-query-col">직위</th>
                             </tr>
 
                             <tr class="row-name">
-                                <th class="sticky-col">닉네임</th>
+                                <th class="sticky-col">꽃 이름</th>
+                                <th class="flower-query-col">닉네임</th>
                             </tr>
                         </thead>
 
@@ -2125,11 +2180,11 @@
 
 
             let roleRowHtml =
-                `<th class="sticky-col">직위</th>`;
+                `<th class="sticky-col"></th><th class="flower-query-col">직위</th>`;
 
 
             let nameRowHtml =
-                `<th class="sticky-col">닉네임</th>`;
+                `<th class="sticky-col">꽃 이름</th><th class="flower-query-col">닉네임</th>`;
 
 
             activeMembers.forEach(m => {
@@ -2188,6 +2243,25 @@
                             "
                         >
 
+                            ${getMasterFlowerByListName(grade, flower) ? `
+                                <span class="flower-action-group">
+                                    <button
+                                        type="button"
+                                        class="btn-search-open"
+                                        onclick="openFlowerDetail('${grade}', '${flower.replace(/'/g, "\\'")}')"
+                                    >
+                                        정보
+                                    </button>
+                                </span>
+                            ` : ''}
+
+                            <span>
+                                ${flower}
+                            </span>
+
+                        </td>
+
+                        <td class="flower-query-col">
                             <button
                                 type="button"
                                 class="btn-flower-info"
@@ -2201,11 +2275,6 @@
                             >
                                 조회
                             </button>
-
-                            <span>
-                                ${flower}
-                            </span>
-
                         </td>
 
                     `;
@@ -2580,17 +2649,6 @@
                             `;
                         })()}
 
-                        ${getMasterFlowerByListName(item.grade, item.flower) ? `
-                            <button
-                                type="button"
-                                class="btn-search-open"
-                                data-grade="${item.grade}"
-                                data-flower-name="${escapeHtml(item.flower)}"
-                            >
-                                열기
-                            </button>
-                        ` : ''}
-
                         <button
                             type="button"
                             class="btn-search-holder"
@@ -2609,25 +2667,6 @@
 
             resultContainer.innerHTML =
                 html;
-
-
-            resultContainer
-                .querySelectorAll(
-                    '.btn-search-open'
-                )
-                .forEach(button => {
-
-                    button.addEventListener(
-                        'click',
-                        function () {
-                            openFlowerDetail(
-                                this.dataset.grade,
-                                this.dataset.flowerName
-                            );
-                        }
-                    );
-
-                });
 
 
             resultContainer
@@ -3001,10 +3040,21 @@
         position: sticky;
         left: 0;
         z-index: 3;
-        min-width: 280px;
-        width: 280px;
+        min-width: 230px;
+        width: 230px;
         background: #f8f9fa !important;
         border-right: 2px solid #333 !important;
+    }
+    #viewportFixedGuildTable th.flower-query-col {
+        position: sticky;
+        left: 230px;
+        z-index: 3;
+        min-width: 64px;
+        width: 64px;
+        padding-left: 6px;
+        padding-right: 6px;
+        background: #f8f9fa !important;
+        border-right: 1px solid #ccc !important;
     }
 </style>
 
