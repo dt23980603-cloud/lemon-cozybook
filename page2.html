@@ -70,6 +70,7 @@
             transform: translateY(-2px);
         }
 
+        /* 등록된 꽃 목록 전체 초기화 */
         .btn-reset-danger {
             background-color: #fff0f0;
             color: #d93838;
@@ -104,6 +105,7 @@
             gap: 8px;
         }
 
+        /* 왼쪽 멤버, 닉네임 입력창 스타일 수정 */
         .form-row {
             display: flex;
             gap: 10px;
@@ -120,8 +122,9 @@
             font-size: 0.9rem;
         }
 
+        /* 추가버튼 스타일 수정 */
         .btn-add {
-            background-color: #fff0f0;
+            background-color: #fff;
             border: 1px solid #333;
             padding: 6px 16px;
             font-weight: bold;
@@ -130,7 +133,32 @@
         }
 
         .btn-add:hover {
-            background-color: #fae0e0;
+            background-color: #cfe2f3;
+        }
+
+        
+        .btn-member-action {
+            padding: 6px 14px;
+            border: 1px solid #777;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #fff;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-member-reset:hover {
+            background-color: #f3f3f3;
+        }
+
+        .btn-member-delete {
+            color: #9b2c2c;
+            border-color: #c77;
+        }
+
+        .btn-member-delete:hover {
+            background-color: #fff0f0;
         }
 
         .member-tag-list {
@@ -196,9 +224,10 @@
             border-color: #a4ce85;
         }
 
+        /* 멤버 태그 시, 보더 색상 */
         .member-tag.selected {
-            border: 2px solid #000 !important;
-            box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgb(0, 0, 0) !important;
+            box-shadow: 0 0 2px rgb(0, 0, 0);
             font-size: 0.9rem;
         }
 
@@ -893,7 +922,7 @@
             <div class="manage-title">
                 📖 길드원 목록 관리
                 <span style="font-size: 0.82rem; font-weight: normal; color: #666;">
-                    (닉네임 태그 클릭: 다중 필터링 / 🔄버튼: 해당 길드원 체크 표시 초기화)
+                    (닉네임 태그 클릭: 다중 필터링 / 선택 후 초기화·삭제 가능)
                 </span>
             </div>
 
@@ -915,7 +944,15 @@
                 >
 
                 <button type="button" class="btn-add" onclick="addMember()">
-                    길드원 추가
+                    ➕ 추가
+                </button>
+
+                <button type="button" class="btn-member-action btn-member-delete" onclick="deleteSelectedMembers()">
+                    ❌ 삭제
+                </button>
+
+                <button type="button" class="btn-member-action btn-member-reset" onclick="resetSelectedMembers()">
+                    🔄 초기화
                 </button>
 
             </div>
@@ -1887,6 +1924,83 @@
         }
 
 
+        function getSelectedMembers() {
+            return getSortedMembers(members)
+                .filter(member => selectedMemberIds.has(member.id));
+        }
+
+
+        function resetSelectedMembers() {
+            const selectedMembers = getSelectedMembers();
+
+            if (selectedMembers.length === 0) {
+                alert('먼저 초기화할 길드원을 선택해 주세요.');
+                return;
+            }
+
+            const activeGrade = getActiveGrade();
+            const names = selectedMembers.map(member => member.name).join(', ');
+
+            if (!confirm(`선택한 ${selectedMembers.length}명(${names})의 '${activeGrade}' 등급 꽃 체크 표시를 초기화하시겠습니까?`)) {
+                return;
+            }
+
+            const gradePrefix = activeGrade + '_';
+            const selectedIds = new Set(selectedMembers.map(member => member.id));
+
+            for (const key in checks) {
+                if (!key.startsWith(gradePrefix)) continue;
+
+                for (const memberId of selectedIds) {
+                    if (key.endsWith('_' + memberId)) {
+                        delete checks[key];
+                        break;
+                    }
+                }
+            }
+
+            saveData();
+            renderAll();
+            alert(`선택한 ${selectedMembers.length}명의 '${activeGrade}' 등급 꽃 체크 표시가 초기화되었습니다.`);
+        }
+
+
+        function deleteSelectedMembers() {
+            const selectedMembers = getSelectedMembers();
+
+            if (selectedMembers.length === 0) {
+                alert('먼저 삭제할 길드원을 선택해 주세요.');
+                return;
+            }
+
+            const names = selectedMembers.map(member => member.name).join(', ');
+
+            if (!confirm(`선택한 ${selectedMembers.length}명(${names})의 길드원을 삭제하시겠습니까?\n해당 길드원의 모든 꽃 체크 기록도 함께 삭제됩니다.`)) {
+                return;
+            }
+
+            const selectedIds = new Set(selectedMembers.map(member => member.id));
+
+            members = members.filter(member => !selectedIds.has(member.id));
+
+            for (const memberId of selectedIds) {
+                selectedMemberIds.delete(memberId);
+            }
+
+            for (const key in checks) {
+                for (const memberId of selectedIds) {
+                    if (key.endsWith('_' + memberId)) {
+                        delete checks[key];
+                        break;
+                    }
+                }
+            }
+
+            saveData();
+            renderAll();
+        }
+
+
         function toggleFilterMember(id) {
 
             if (selectedMemberIds.has(id)) {
@@ -2097,36 +2211,10 @@
                     });
 
 
-                    /* 체크 초기화 버튼 - 닉네임 왼쪽 */
-                    const resetBtn = document.createElement('button');
-                    resetBtn.type = 'button';
-                    resetBtn.className = 'btn-reset-member-chk';
-                    resetBtn.title = `${m.name}님 체크 초기화`;
-                    resetBtn.textContent = '🔄';
-                    resetBtn.addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        resetMemberChecks(m.id, m.name, event);
-                    });
-
-
                     const text = document.createElement('span');
                     text.textContent = `[${m.role}] ${m.name}`;
 
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.type = 'button';
-                    deleteBtn.className = 'btn-del-tag';
-                    deleteBtn.title = '길드원 삭제';
-                    deleteBtn.textContent = '✕';
-                    deleteBtn.addEventListener('click', (event) => {
-                        event.stopPropagation();
-                        deleteMember(m.id, event);
-                    });
-
-
-                    tag.appendChild(resetBtn);
                     tag.appendChild(text);
-                    tag.appendChild(deleteBtn);
 
 
                     container.appendChild(tag);
