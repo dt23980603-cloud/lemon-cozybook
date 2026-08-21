@@ -1,18 +1,21 @@
-D1 공유 저장 테스트본 (전체v8 기반)
+Cloudflare Pages D1 공유 저장
 
-1. Cloudflare Pages 프로젝트 Settings > Bindings에서 D1 binding을 추가합니다.
-   Variable name: DB
-   Database: lemon-cozybook-db
+필수 설정
+- D1 database: lemon-cozybook-db
+- Pages D1 binding name: DB
+- functions/api/guild-state.js 를 프로젝트 루트의 functions/api/ 아래에 유지
 
-2. 이 폴더 구조를 그대로 Git 프로젝트 루트에 붙여넣습니다.
-   특히 functions/api/guild-state.js 파일이 반드시 포함되어야 합니다.
+이 테스트본은 기존 guild_state 테이블의 state_json 안에 아래 필드를 함께 저장합니다.
+- members
+- checks
+- customFlowers
+- updateList
 
-3. Commit & Push 후 새 배포가 완료될 때까지 기다립니다.
+기존 v9 D1 데이터(members/checks)는 자동으로 유지됩니다.
+기존 브라우저 localStorage에만 있던 customFlowers/updateList는 서버에 해당 필드가 아직 없을 때 최초 1회 자동 이관됩니다.
 
-4. 기존 체크 데이터가 들어있는 크롬에서 page2.html을 먼저 엽니다.
-   D1이 비어 있으면 현재 브라우저의 길드원/체크 데이터를 최초 공용 상태로 저장합니다.
-
-5. 다른 크롬/기기에서 같은 page2.html을 열어 길드원 목록과 체크 상태가 공유되는지 확인합니다.
-
-공유 대상: guild_members, guild_checks
-기존 localStorage는 오프라인/오류 시 보조 저장소로 유지됩니다.
+배포 후 권장 테스트
+1) 기존 신규 꽃 데이터가 있는 크롬에서 메인페이지 또는 page2를 먼저 엽니다.
+2) 다른 크롬에서 page2/page5를 열어 신규 꽃이 보이는지 확인합니다.
+3) 한 브라우저에서 신규 꽃 추가/수정/삭제 후 다른 브라우저에서 약 3초 내 반영되는지 확인합니다.
+4) page2에서 꽃 체크/해제 후 다른 브라우저의 닉네임 (체크수)가 함께 바뀌는지 확인합니다.

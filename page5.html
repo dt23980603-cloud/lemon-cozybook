@@ -134,16 +134,22 @@
   <script>
     const masterFlowers = window.FLOWER_MASTER_DATA || [];
 
-    function getCustomFlowers() {
-      let saved = [];
+    let customFlowersCache = (() => {
       try {
-        saved = JSON.parse(localStorage.getItem('guild_custom_flowers') || '[]');
+        const saved = JSON.parse(localStorage.getItem('guild_custom_flowers') || '[]');
+        return Array.isArray(saved) ? saved : [];
       } catch (e) {
-        saved = [];
+        return [];
       }
+    })();
 
+    const GUILD_STATE_API = '/api/guild-state';
+    let lastRemoteUpdatedAt = 0;
+    let remoteSyncReady = false;
+
+    function getCustomFlowers() {
       const masterNames = new Set(masterFlowers.map(f => f.listName));
-      return saved
+      return customFlowersCache
         .filter(item => item && item.grade && item.name && !masterNames.has(item.name))
         .map((item, index) => ({
           id: `CUSTOM_${item.grade}_${index}`,
@@ -245,7 +251,75 @@
     document.getElementById('closeModal').addEventListener('click', closeDetail);
     modal.addEventListener('click', e => { if (e.target === modal) closeDetail(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+    async function saveCustomFlowersToRemote() {
+      try {
+        const response = await fetch(GUILD_STATE_API, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ state: { customFlowers: customFlowersCache } })
+        });
+        if (!response.ok) throw new Error(`PUT ${response.status}`);
+        const payload = await response.json();
+        lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
+        remoteSyncReady = true;
+      } catch (error) {
+        console.warn('D1 추가 꽃 저장 실패', error);
+      }
+    }
+
+    async function syncCustomFlowersFromRemote(initial = false) {
+      try {
+        const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`GET ${response.status}`);
+        const payload = await response.json();
+
+        if (payload?.exists && payload.state) {
+          const updatedAt = Number(payload.updatedAt || 0);
+          const hasRemoteCustomFlowers = Array.isArray(payload.state.customFlowers);
+
+          if (hasRemoteCustomFlowers) {
+            customFlowersCache = payload.state.customFlowers;
+            localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowersCache));
+            if (initial || updatedAt > lastRemoteUpdatedAt) renderFlowers();
+          } else if (initial && customFlowersCache.length > 0) {
+            await saveCustomFlowersToRemote();
+          }
+
+          lastRemoteUpdatedAt = Math.max(lastRemoteUpdatedAt, updatedAt);
+          remoteSyncReady = true;
+        } else if (initial && customFlowersCache.length > 0) {
+          remoteSyncReady = true;
+          await saveCustomFlowersToRemote();
+        } else {
+          remoteSyncReady = true;
+        }
+      } catch (error) {
+        console.warn('D1 추가 꽃 불러오기 실패 - 현재 브라우저 저장을 사용합니다.', error);
+        remoteSyncReady = false;
+      }
+    }
+
+    window.addEventListener('storage', e => {
+      if (e.key !== 'guild_custom_flowers') return;
+      try {
+        const saved = JSON.parse(e.newValue || '[]');
+        customFlowersCache = Array.isArray(saved) ? saved : [];
+      } catch (_) {
+        customFlowersCache = [];
+      }
+      renderFlowers();
+    });
+
     renderFlowers();
+    syncCustomFlowersFromRemote(true);
+    setInterval(() => {
+      if (remoteSyncReady) syncCustomFlowersFromRemote(false);
+    }, 3000);
+    window.addEventListener('focus', () => syncCustomFlowersFromRemote(false));
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncCustomFlowersFromRemote(false);
+    });
   </script>
 </body>
 </html>

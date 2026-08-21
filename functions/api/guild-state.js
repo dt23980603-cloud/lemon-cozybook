@@ -13,6 +13,44 @@ async function ensureTable(db) {
   `).run();
 }
 
+function isPlainObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function sanitizePatch(input) {
+  const patch = {};
+
+  if (Array.isArray(input?.members)) patch.members = input.members;
+  if (isPlainObject(input?.checks)) patch.checks = input.checks;
+  if (Array.isArray(input?.customFlowers)) patch.customFlowers = input.customFlowers;
+  if (Array.isArray(input?.updateList)) patch.updateList = input.updateList;
+
+  return patch;
+}
+
+async function readCurrentState(db) {
+  const row = await db
+    .prepare('SELECT state_json, updated_at FROM guild_state WHERE id = ?1')
+    .bind('main')
+    .first();
+
+  if (!row) return { state: {}, updatedAt: 0, exists: false };
+
+  let state = {};
+  try {
+    const parsed = JSON.parse(row.state_json);
+    if (isPlainObject(parsed)) state = parsed;
+  } catch (_) {
+    state = {};
+  }
+
+  return {
+    state,
+    updatedAt: Number(row.updated_at || 0),
+    exists: true
+  };
+}
+
 export async function onRequestGet(context) {
   const { env } = context;
   if (!env.DB) {
@@ -23,28 +61,18 @@ export async function onRequestGet(context) {
   }
 
   await ensureTable(env.DB);
-  const row = await env.DB
-    .prepare('SELECT state_json, updated_at FROM guild_state WHERE id = ?1')
-    .bind('main')
-    .first();
+  const current = await readCurrentState(env.DB);
 
-  if (!row) {
+  if (!current.exists) {
     return new Response(JSON.stringify({ exists: false, state: null, updatedAt: 0 }), {
       headers: JSON_HEADERS
     });
   }
 
-  let state = null;
-  try {
-    state = JSON.parse(row.state_json);
-  } catch (_) {
-    state = null;
-  }
-
   return new Response(JSON.stringify({
-    exists: Boolean(state),
-    state,
-    updatedAt: Number(row.updated_at || 0)
+    exists: true,
+    state: current.state,
+    updatedAt: current.updatedAt
   }), { headers: JSON_HEADERS });
 }
 
@@ -67,20 +95,18 @@ export async function onRequestPut(context) {
     });
   }
 
-  const state = body?.state;
-  if (!state || !Array.isArray(state.members) || typeof state.checks !== 'object' || state.checks === null) {
-    return new Response(JSON.stringify({ error: 'Invalid guild state.' }), {
+  const patch = sanitizePatch(body?.state);
+  if (Object.keys(patch).length === 0) {
+    return new Response(JSON.stringify({ error: 'No valid guild state fields were provided.' }), {
       status: 400,
       headers: JSON_HEADERS
     });
   }
 
   await ensureTable(env.DB);
+  const current = await readCurrentState(env.DB);
+  const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
-  const stateJson = JSON.stringify({
-    members: state.members,
-    checks: state.checks
-  });
 
   await env.DB.prepare(`
     INSERT INTO guild_state (id, state_json, updated_at)
@@ -88,9 +114,13 @@ export async function onRequestPut(context) {
     ON CONFLICT(id) DO UPDATE SET
       state_json = excluded.state_json,
       updated_at = excluded.updated_at
-  `).bind('main', stateJson, updatedAt).run();
+  `).bind('main', JSON.stringify(mergedState), updatedAt).run();
 
-  return new Response(JSON.stringify({ ok: true, updatedAt }), {
+  return new Response(JSON.stringify({
+    ok: true,
+    updatedAt,
+    savedFields: Object.keys(patch)
+  }), {
     headers: JSON_HEADERS
   });
 }

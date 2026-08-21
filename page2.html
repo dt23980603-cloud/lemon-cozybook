@@ -1616,13 +1616,18 @@
         };
 
 
-        function getCustomFlowers() {
+        let customFlowers = (() => {
             try {
                 const saved = JSON.parse(localStorage.getItem('guild_custom_flowers')) || [];
                 return Array.isArray(saved) ? saved : [];
             } catch (e) {
                 return [];
             }
+        })();
+
+
+        function getCustomFlowers() {
+            return Array.isArray(customFlowers) ? customFlowers : [];
         }
 
 
@@ -1688,6 +1693,12 @@
 
         window.addEventListener('storage', function (event) {
             if (event.key === 'guild_custom_flowers') {
+                try {
+                    const saved = JSON.parse(event.newValue || '[]');
+                    customFlowers = Array.isArray(saved) ? saved : [];
+                } catch (_) {
+                    customFlowers = [];
+                }
                 renderAll();
             }
         });
@@ -1746,12 +1757,17 @@
                 )
             ) {
 
-                localStorage.removeItem('guild_custom_flowers');
+                customFlowers = [];
+                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
 
                 checks = {};
+                localStorage.setItem('guild_checks', JSON.stringify(checks));
 
-                saveData();
                 renderAll();
+                saveGuildStatePatchToRemote({
+                    customFlowers,
+                    checks
+                });
 
                 alert(
                     '등록된 모든 꽃 목록이 초기화되었습니다.'
@@ -2074,23 +2090,41 @@
 
 
         function applyGuildStateSnapshot(state) {
-            if (!state || !Array.isArray(state.members) || typeof state.checks !== 'object' || state.checks === null) {
+            if (!state || typeof state !== 'object') {
                 return false;
             }
 
-            members = state.members;
-            checks = state.checks;
+            let changed = false;
+
+            if (Array.isArray(state.members)) {
+                members = state.members;
+                localStorage.setItem('guild_members', JSON.stringify(members));
+                changed = true;
+            }
+
+            if (state.checks && typeof state.checks === 'object' && !Array.isArray(state.checks)) {
+                checks = state.checks;
+                localStorage.setItem('guild_checks', JSON.stringify(checks));
+                changed = true;
+            }
+
+            if (Array.isArray(state.customFlowers)) {
+                customFlowers = state.customFlowers;
+                localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                changed = true;
+            }
 
             const validMemberIds = new Set(members.map(member => member.id));
             selectedMemberIds = new Set(
                 [...selectedMemberIds].filter(id => validMemberIds.has(id))
             );
 
-            localStorage.setItem('guild_members', JSON.stringify(members));
-            localStorage.setItem('guild_checks', JSON.stringify(checks));
-            renderAll();
-            updateFlowerSearchSelectedMember();
-            return true;
+            if (changed) {
+                renderAll();
+                updateFlowerSearchSelectedMember();
+            }
+
+            return changed;
         }
 
 
@@ -2102,11 +2136,26 @@
                 const payload = await response.json();
 
                 if (payload && payload.exists && payload.state) {
+                    const hadRemoteCustomFlowers = Array.isArray(payload.state.customFlowers);
+                    const localCustomFlowersBeforeSync = [...customFlowers];
+
                     if (applyGuildStateSnapshot(payload.state)) {
                         lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
                     }
+
+                    // 기존 v9 D1 데이터에는 customFlowers가 없으므로,
+                    // 이 브라우저에 이미 추가 꽃이 있으면 최초 1회 D1에 이관합니다.
+                    if (!hadRemoteCustomFlowers && localCustomFlowersBeforeSync.length > 0) {
+                        customFlowers = localCustomFlowersBeforeSync;
+                        localStorage.setItem('guild_custom_flowers', JSON.stringify(customFlowers));
+                        await saveGuildStatePatchToRemote({ customFlowers }, true);
+                        renderAll();
+                    }
                 } else {
                     await saveGuildStateToRemote(true);
+                    if (customFlowers.length > 0) {
+                        await saveGuildStatePatchToRemote({ customFlowers }, true);
+                    }
                 }
 
                 remoteSyncReady = true;
@@ -2124,6 +2173,27 @@
             remoteSaveTimer = setTimeout(() => {
                 saveGuildStateToRemote(false);
             }, 250);
+        }
+
+
+        async function saveGuildStatePatchToRemote(patch, force = false) {
+            if (!force && !remoteSyncReady) return;
+
+            try {
+                const response = await fetch(GUILD_STATE_API, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ state: patch })
+                });
+
+                if (!response.ok) throw new Error(`PUT ${response.status}`);
+
+                const payload = await response.json();
+                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
+                remoteSyncReady = true;
+            } catch (error) {
+                console.warn('D1 공용 부분 저장 실패 - 로컬에는 저장되었습니다.', error);
+            }
         }
 
 
