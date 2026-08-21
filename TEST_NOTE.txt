@@ -1,8 +1,1 @@
-전체v10 기반 테스트본
-- page5 상단에 "🗑 꽃 삭제" 버튼 추가
-- 메인페이지에서 추가한 커스텀 꽃만 삭제 가능
-- 삭제 시 guild_custom_flowers와 guild_checks를 함께 정리
-- 같은 등급에서 삭제된 꽃 뒤 체크 인덱스를 당겨 기존 길드원 체크 상태 유지
-- D1에 customFlowers + checks 동시 저장
-- 다른 브라우저/기기에도 약 3초 내 반영
-- 기본 마스터 꽃은 삭제 대상에 표시되지 않음
+전체v10 기반 테스트본: 전체 꽃 도감에서 등록 꽃 삭제 시 guild_custom_flowers, guild_checks와 함께 guild_update_list의 해당 꽃 내역도 삭제하고 D1에 동기화합니다.
