@@ -618,6 +618,35 @@
             return changed;
         }
 
+        // 전체 꽃 도감에서 이미 삭제된 등록 꽃의 업데이트 내역이 남아 있으면 자동 정리합니다.
+        // 비교 기준은 "등급 + 실제 꽃 이름"이며, 존재하는 등록 꽃의 내역만 유지합니다.
+        function cleanupOrphanUpdateRows() {
+            if (!Array.isArray(updateList) || updateList.length === 0) return 0;
+
+            const existingFlowerKeys = new Set(
+                (Array.isArray(customFlowers) ? customFlowers : [])
+                    .filter(flower => flower && flower.grade && flower.name)
+                    .map(flower => `${flower.grade}\u0000${flower.name}`)
+            );
+
+            const beforeCount = updateList.length;
+            updateList = updateList.filter(item => {
+                if (!item || !item.grade) return true;
+
+                const category = item.category === '-' ? '' : (item.category || '');
+                const flowerName = makeFlowerName(category, item.content || '');
+                return existingFlowerKeys.has(`${item.grade}\u0000${flowerName}`);
+            });
+
+            const removedCount = beforeCount - updateList.length;
+            if (removedCount > 0) {
+                localStorage.setItem('guild_update_list', JSON.stringify(updateList));
+                renderTable();
+            }
+
+            return removedCount;
+        }
+
         async function saveSharedStateToRemote(patch, force = false) {
             if (!force && !remoteSyncReady) return;
 
@@ -669,8 +698,14 @@
                         await saveSharedStateToRemote(seedPatch, true);
                         renderTable();
                     }
+
+                    const removedOrphans = cleanupOrphanUpdateRows();
+                    if (removedOrphans > 0) {
+                        await saveSharedStateToRemote({ updateList }, true);
+                    }
                 } else {
                     remoteSyncReady = true;
+                    const removedOrphans = cleanupOrphanUpdateRows();
                     await saveSharedStateToRemote({
                         updateList,
                         customFlowers
@@ -692,6 +727,11 @@
                 if (payload?.exists && payload.state && updatedAt > lastRemoteUpdatedAt) {
                     applySharedFlowerState(payload.state);
                     lastRemoteUpdatedAt = updatedAt;
+
+                    const removedOrphans = cleanupOrphanUpdateRows();
+                    if (removedOrphans > 0) {
+                        await saveSharedStateToRemote({ updateList }, true);
+                    }
                 }
             } catch (error) {
                 console.warn('D1 꽃 데이터 공용 상태 확인 실패', error);
