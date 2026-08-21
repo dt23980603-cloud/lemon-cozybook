@@ -1671,10 +1671,18 @@
 
         let selectedMemberIds = new Set();
 
+        const GUILD_STATE_API = '/api/guild-state';
+        let remoteSyncReady = false;
+        let remoteSaveTimer = null;
+        let remotePollTimer = null;
+        let lastRemoteUpdatedAt = 0;
+        let remoteRequestInFlight = false;
 
-        window.onload = function () {
+        window.onload = async function () {
             renderAll();
             setupScrollSync();
+            await initializeRemoteGuildState();
+            startRemoteGuildStatePolling();
         };
 
 
@@ -2052,6 +2060,120 @@
                 JSON.stringify(checks)
             );
 
+            queueRemoteGuildStateSave();
+        }
+
+
+        function getGuildStateSnapshot() {
+            return {
+                members,
+                checks
+            };
+        }
+
+
+        function applyGuildStateSnapshot(state) {
+            if (!state || !Array.isArray(state.members) || typeof state.checks !== 'object' || state.checks === null) {
+                return false;
+            }
+
+            members = state.members;
+            checks = state.checks;
+
+            const validMemberIds = new Set(members.map(member => member.id));
+            selectedMemberIds = new Set(
+                [...selectedMemberIds].filter(id => validMemberIds.has(id))
+            );
+
+            localStorage.setItem('guild_members', JSON.stringify(members));
+            localStorage.setItem('guild_checks', JSON.stringify(checks));
+            renderAll();
+            updateFlowerSearchSelectedMember();
+            return true;
+        }
+
+
+        async function initializeRemoteGuildState() {
+            try {
+                const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`GET ${response.status}`);
+
+                const payload = await response.json();
+
+                if (payload && payload.exists && payload.state) {
+                    if (applyGuildStateSnapshot(payload.state)) {
+                        lastRemoteUpdatedAt = Number(payload.updatedAt || 0);
+                    }
+                } else {
+                    await saveGuildStateToRemote(true);
+                }
+
+                remoteSyncReady = true;
+            } catch (error) {
+                console.warn('D1 공용 저장 연결 실패 - 현재 브라우저 저장을 사용합니다.', error);
+                remoteSyncReady = false;
+            }
+        }
+
+
+        function queueRemoteGuildStateSave() {
+            if (!remoteSyncReady) return;
+
+            clearTimeout(remoteSaveTimer);
+            remoteSaveTimer = setTimeout(() => {
+                saveGuildStateToRemote(false);
+            }, 250);
+        }
+
+
+        async function saveGuildStateToRemote(force = false) {
+            if (!force && !remoteSyncReady) return;
+
+            try {
+                const response = await fetch(GUILD_STATE_API, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ state: getGuildStateSnapshot() })
+                });
+
+                if (!response.ok) throw new Error(`PUT ${response.status}`);
+
+                const payload = await response.json();
+                lastRemoteUpdatedAt = Number(payload.updatedAt || Date.now());
+                remoteSyncReady = true;
+            } catch (error) {
+                console.warn('D1 공용 저장 실패 - 로컬에는 저장되었습니다.', error);
+            }
+        }
+
+
+        async function pullGuildStateFromRemote() {
+            if (!remoteSyncReady || remoteRequestInFlight || remoteSaveTimer) return;
+
+            remoteRequestInFlight = true;
+            try {
+                const response = await fetch(GUILD_STATE_API, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`GET ${response.status}`);
+
+                const payload = await response.json();
+                const updatedAt = Number(payload.updatedAt || 0);
+
+                if (payload.exists && payload.state && updatedAt > lastRemoteUpdatedAt) {
+                    if (applyGuildStateSnapshot(payload.state)) {
+                        lastRemoteUpdatedAt = updatedAt;
+                    }
+                }
+            } catch (error) {
+                console.warn('D1 공용 상태 확인 실패', error);
+            } finally {
+                remoteRequestInFlight = false;
+            }
+        }
+
+
+        function startRemoteGuildStatePolling() {
+            if (remotePollTimer) clearInterval(remotePollTimer);
+            remotePollTimer = setInterval(pullGuildStateFromRemote, 3000);
         }
 
 
