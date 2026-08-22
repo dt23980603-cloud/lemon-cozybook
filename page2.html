@@ -899,7 +899,8 @@
                 width: 100%;
             }
         }
-    </style>
+        .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
+</style>
 </head>
 
 <body>
@@ -908,7 +909,7 @@
 
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기">🔙</a>
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
                 <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
             </div>
 
@@ -3401,6 +3402,7 @@
         background: #f8f9fa !important;
         border-right: 1px solid #ccc !important;
     }
+    .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
 </style>
 
 <div id="viewportFixedGuildHeader" aria-hidden="true">
