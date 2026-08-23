@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>레몬 | 더 코지 플로리스트</title>
-    <link rel="icon" type="image/png" href="lemon-favicon.png">
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
 
     <!-- 고운 바탕 폰트 불러오기 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -437,20 +437,39 @@
         }
 
     </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+<style id="pwa-install-style">
+  #pwaInstallBtn {
+    display:block; position:fixed; right:14px; bottom:14px; z-index:10000;
+    border:0; border-radius:999px; padding:10px 14px; cursor:pointer;
+    background:#ffe680; color:#4a3b00; font-weight:700; font-size:13px;
+    box-shadow:0 3px 12px rgba(0,0,0,.16);
+  }
+  #pwaInstallBtn:hover { filter:brightness(.96); }
+  @media (max-width:480px){ #pwaInstallBtn { right:12px; bottom:12px; font-size:12px; padding:9px 12px; } }
+</style>
 </head>
 
 <body>
 
     <div class="main-banner" aria-label="더 코지 플로리스트 레몬 배너">
-        <img class="main-banner-pc" src="lemon-banner-pc.png" alt="더 코지 플로리스트 레몬 PC 배너">
-        <img class="main-banner-mobile" src="lemon-banner-mobile.png" alt="더 코지 플로리스트 레몬 모바일 배너">
+        <img class="main-banner-pc" src="images/banners/lemon-banner-pc.png" alt="더 코지 플로리스트 레몬 PC 배너">
+        <img class="main-banner-mobile" src="images/banners/lemon-banner-mobile.png" alt="더 코지 플로리스트 레몬 모바일 배너">
     </div>
 
     <div class="container">
         <!-- 좌측 영역 (공지사항 & 이동 버튼 4개) -->
         <div class="left-panel">
             <div class="notice-box">
-                    <div class="notice-title">📢 NOTICE | 새로운 길드원 여러분 환영합니다!</div>
+                <div class="notice-title">📢 NOTICE | 새로운 길드원 여러분 환영합니다!</div>
                 <div class="notice-content">
                     <p># 새로운 길드원 여러분! 🍋레몬에 오신 것을 환영합니다!💖<br>
                     <p># 인게임 공식 업데이트 후, 1-3일 이내에 최대한 추가하도록 노력하겠습니다:)
@@ -998,8 +1017,91 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">v17</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">v18</div>
 
+
+<script id="pwa-auto-update-script">
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
+
+        // 앱을 열 때마다 새 서비스 워커가 있는지 즉시 확인합니다.
+        await registration.update();
+
+        // 앱을 오래 켜둔 경우에도 주기적으로 새 배포본을 확인합니다.
+        setInterval(() => registration.update().catch(() => {}), 60 * 1000);
+
+        registration.addEventListener('updatefound', () => {
+          const worker = registration.installing;
+          if (!worker) return;
+
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              // 새 버전이 준비되면 즉시 활성화합니다.
+              worker.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+
+        // 새 서비스 워커가 페이지 제어권을 얻으면 한 번만 자동 새로고침합니다.
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          const key = 'lemon_pwa_auto_reload';
+          if (sessionStorage.getItem(key) === '1') return;
+          sessionStorage.setItem(key, '1');
+          window.location.reload();
+        });
+
+        // 정상적으로 새 페이지가 열린 뒤 플래그를 해제해 다음 업데이트도 자동 적용되게 합니다.
+        setTimeout(() => sessionStorage.removeItem('lemon_pwa_auto_reload'), 5000);
+      } catch (err) {
+        console.warn('PWA service worker registration/update failed:', err);
+      }
+    });
+  }
+</script>
+
+
+<button id="pwaInstallBtn" type="button" aria-label="레몬 앱 설치">🍋 앱 설치</button>
+<script id="pwa-install-script">
+  (() => {
+    let deferredPrompt = null;
+    const btn = document.getElementById('pwaInstallBtn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // 설치 전에는 항상 버튼을 표시합니다.
+    btn.style.display = isStandalone ? 'none' : 'block';
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone) btn.style.display = 'block';
+    });
+
+    btn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        return;
+      }
+
+      // 브라우저가 설치 프롬프트를 아직 제공하지 않는 경우에도 버튼은 유지하고 안내합니다.
+      const ua = navigator.userAgent.toLowerCase();
+      const isIOS = /iphone|ipad|ipod/.test(ua);
+      if (isIOS) {
+        alert('Safari의 공유 버튼을 누른 뒤 “홈 화면에 추가”를 선택해주세요.');
+      } else {
+        alert('Chrome에서 이 페이지를 열고 잠시 이용한 뒤 다시 눌러주세요. 브라우저 메뉴의 “앱 설치” 또는 “홈 화면에 추가”를 이용해도 됩니다.');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      btn.style.display = 'none';
+    });
+  })();
+</script>
 </body>
 
 </html>

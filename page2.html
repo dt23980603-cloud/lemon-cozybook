@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>길드 꽃 도감 | 레몬</title>
-    <link rel="icon" type="image/png" href="lemon-favicon.png">
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
     <!-- Google Fonts: Gowun Batang 불러오기 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -901,6 +901,14 @@
         }
         .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
 </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 
 <body>
@@ -909,11 +917,11 @@
 
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
                 <div class="guild-title-wrap">
                     <h1 style="margin: 0; font-size: 1.5rem;">🌸길드 꽃 도감🌸</h1>
                     <button type="button" class="guild-guide-btn" onclick="openGuildGuide()" title="길드 꽃 도감 가이드" aria-label="길드 꽃 도감 가이드 열기">
-                        <img src="guide-default.png" alt="가이드">
+                        <img src="images/ui/guide-default.png" alt="가이드">
                     </button>
                 </div>
             </div>
@@ -3713,6 +3721,15 @@
             if (event.key === 'Escape') closeGuildGuide();
         });
     </script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
 
 </body>
 

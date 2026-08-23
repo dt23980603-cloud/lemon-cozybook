@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta charset="UTF-8"><title>꽃 개량 효율표</title>
-    <link rel="icon" type="image/png" href="lemon-favicon.png"><style>
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png"><style>
   .nav-btn-home { display:inline-flex; width:50px; height:50px; align-items:center; justify-content:center; text-decoration:none; }
   .back-icon { width:100%; height:100%; object-fit:contain; display:block; }
 
@@ -28,9 +28,26 @@
             display: block;
             border: 0;
         }
-</style></head>
+</style>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
 <body style="padding: 20px;">
   <h1>💖준비중입니다💖</h1>
-  <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
+  <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
+
 </body>
 </html>

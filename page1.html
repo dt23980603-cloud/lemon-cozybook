@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>코지 공략모음 | 레몬</title>
-    <link rel="icon" type="image/png" href="lemon-favicon.png">
+    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
@@ -196,12 +196,20 @@
             border: 0;
         }
 </style>
+
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#ffe680">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="레몬">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
     <div class="container-full">
         <div class="header">
             <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="back-button.png" alt="뒤로가기" class="back-icon"></a>
+                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
                 <h1 style="margin: 0; font-size: 1.5rem;">📖코지 공략모음📖</h1>
             </div>
         </div>
@@ -241,5 +249,14 @@
             </div>
         </div>
     </div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
+    });
+  }
+</script>
+
 </body>
 </html>
