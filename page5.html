@@ -18,8 +18,8 @@
     .nav-btn-home:hover { background:#fff0f0; transform:translateY(-2px); }
     .subtitle { margin:3px 0 0; color:#777; font-size:.88rem; }
     .header-actions { display:flex; align-items:center; gap:8px; }
-    .btn-delete-flower { padding:9px 14px; background:#fff; border:1px solid #b45a5a; color:#9c3030; border-radius:6px; font-weight:bold; cursor:pointer; transition:.15s; }
-    .btn-delete-flower:hover { background:#fff0f0; }
+    .btn-delete-flower { width:42px; height:42px; padding:0; background:transparent; border:0; color:#9c3030; border-radius:6px; font-size:1.35rem; line-height:1; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:.15s; }
+    .btn-delete-flower:hover { background:#fff0f0; transform:translateY(-1px); }
 
     .control-card { background:#f8f9fa; border:1px solid #333; border-radius:6px; padding:15px; margin-bottom:18px; }
     .search-row { display:flex; gap:8px; margin-bottom:12px; }
@@ -44,6 +44,60 @@
     .flower-image { width:100%; height:100%; object-fit:contain; }
     .custom-placeholder { display:flex; align-items:center; justify-content:center; font-size:3rem; color:#aaa; background:#f8f9fa; }
     .grade-badge { position:absolute; top:10px; left:10px; display:inline-flex; align-items:center; justify-content:center; min-width:42px; height:28px; padding:0 9px; border:1px solid #777; border-radius:14px; font-size:.82rem; font-weight:bold; background:#d4edbc; }
+
+    /* N/R등급 카드 디자인 테스트: 이미지 바깥 여백 크롭 + 등급 영역 분리 */
+    .flower-card.grade-N .image-wrap,
+    .flower-card.grade-R .image-wrap {
+      aspect-ratio:auto;
+      height:auto;
+      padding:10px 12px 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+      justify-content:flex-start;
+      gap:8px;
+    }
+    .flower-card.grade-N .grade-badge,
+    .flower-card.grade-R .grade-badge {
+      position:static;
+      align-self:flex-start;
+      min-width:42px;
+      height:28px;
+      padding:0 9px;
+      border:none;
+      border-radius:14px;
+      font-size:.82rem;
+      font-family:Arial, sans-serif;
+      font-weight:800 !important;
+      line-height:1;
+      flex:0 0 auto;
+    }
+    .flower-card.grade-N .grade-badge { background:#d4edbc; }
+    .flower-card.grade-R .grade-badge { background:#bfe1f6; }
+    .flower-card.grade-N .grade-image-crop,
+    .flower-card.grade-R .grade-image-crop {
+      width:100%;
+      aspect-ratio:1 / 1;
+      flex:0 0 auto;
+      overflow:hidden;
+      border-radius:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#f4ecd9;
+    }
+    .flower-card.grade-N .grade-image-crop .flower-image,
+    .flower-card.grade-R .grade-image-crop .flower-image {
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      transform:scale(1.07);
+      transform-origin:center;
+    }
+    .flower-card.grade-N .grade-image-crop .custom-placeholder,
+    .flower-card.grade-R .grade-image-crop .custom-placeholder {
+      transform:none;
+    }
     .card-body { padding:13px; text-align:center; }
     .flower-name { font-size:1rem; font-weight:bold; margin-bottom:10px; }
     .flower-meta { color:#777; font-size:.78rem; margin-bottom:11px; }
@@ -84,8 +138,31 @@
       .container-full { padding:13px; }
       .header { align-items:flex-start; }
       .header h1 { font-size:1.25rem !important; }
-      .tab-btn { min-width:72px; }
-      .flower-grid { grid-template-columns:1fr; }
+
+      /* 모바일 검색/등급 필터: 화면 너비에 맞게 압축 */
+      .control-card { padding:10px; margin-bottom:14px; }
+      .search-row { gap:6px; margin-bottom:9px; }
+      .search-input { padding:9px 10px; font-size:.82rem; }
+      .btn-clear { flex:0 0 auto; padding:8px 10px; font-size:.8rem; }
+      .tab-container { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+      .tab-btn { min-width:0; width:100%; padding:8px 2px; font-size:.76rem; white-space:nowrap; }
+
+      /* 모바일 꽃 카드: 한 줄 3개 */
+      .flower-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+      .flower-card { border-radius:8px; }
+      .flower-card:hover { transform:none; }
+      .flower-card.grade-N .image-wrap,
+      .flower-card.grade-R .image-wrap { padding:6px 6px 7px; gap:5px; }
+      .flower-card.grade-N .grade-badge,
+      .flower-card.grade-R .grade-badge { min-width:30px; height:20px; padding:0 6px; border-radius:10px; font-size:.66rem; font-weight:800 !important; }
+      .flower-card.grade-N .grade-image-crop,
+      .flower-card.grade-R .grade-image-crop { border-radius:13px; }
+      .card-body { padding:7px 5px 8px; }
+      .flower-name { font-size:.72rem; line-height:1.25; margin-bottom:5px; min-height:1.8em; word-break:keep-all; }
+      .flower-meta { font-size:.58rem; line-height:1.25; margin-bottom:6px; white-space:nowrap; }
+      .btn-open { padding:6px 2px; font-size:.67rem; border-radius:5px; }
+      .result-info { font-size:.7rem; gap:6px; align-items:flex-start; }
+
       .flower-detail-layout { flex-direction:column; align-items:center; }
       .flower-detail-info { width:100%; }
     }
@@ -135,7 +212,7 @@
         </div>
       </div>
       <div class="header-actions">
-        <button id="openDeleteFlowerModal" class="btn-delete-flower" type="button">🗑 꽃 삭제</button>
+        <button id="openDeleteFlowerModal" class="btn-delete-flower" type="button" aria-label="꽃 삭제" title="꽃 삭제">🗑️</button>
       </div>
     </div>
 
@@ -271,12 +348,14 @@
         return;
       }
       grid.innerHTML = filtered.map(f => `
-        <article class="flower-card">
+        <article class="flower-card grade-${f.grade}">
           <div class="image-wrap">
             <span class="grade-badge">${f.grade}</span>
-            ${f.isCustom
+            ${(f.grade === 'N' || f.grade === 'R') ? '<div class="grade-image-crop">' : ''}
+            ${(f.isCustom || !f.image)
               ? '<div class="flower-image custom-placeholder" aria-label="이미지 준비중">🌷</div>'
               : `<img src="${f.image}" alt="${f.name}" class="flower-image" onerror="this.onerror=null;this.src='${f.imageRemote}';">`}
+            ${(f.grade === 'N' || f.grade === 'R') ? '</div>' : ''}
           </div>
           <div class="card-body">
             <div class="flower-name">${f.name}</div>
