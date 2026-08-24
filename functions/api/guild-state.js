@@ -22,8 +22,6 @@ function sanitizePatch(input) {
 
   if (Array.isArray(input?.members)) patch.members = input.members;
   if (isPlainObject(input?.checks)) patch.checks = input.checks;
-  if (Array.isArray(input?.customFlowers)) patch.customFlowers = input.customFlowers;
-  if (Array.isArray(input?.updateList)) patch.updateList = input.updateList;
 
   return patch;
 }
@@ -51,6 +49,25 @@ async function readCurrentState(db, stateId = 'main') {
   };
 }
 
+// 메인 승격 안전장치: 같은 D1 안에 main 행이 없고 예전 demo 행만 남아 있으면
+// demo 상태를 main으로 1회 복제합니다. 기존 main이 있으면 절대 덮어쓰지 않습니다.
+async function ensureMainStateFromLegacyDemo(db) {
+  const main = await readCurrentState(db, 'main');
+  if (main.exists) return main;
+
+  const demo = await readCurrentState(db, 'demo');
+  if (!demo.exists) return main;
+
+  const copiedAt = Date.now();
+  await db.prepare(`
+    INSERT INTO guild_state (id, state_json, updated_at)
+    VALUES ('main', ?1, ?2)
+    ON CONFLICT(id) DO NOTHING
+  `).bind(JSON.stringify(demo.state), copiedAt).run();
+
+  return readCurrentState(db, 'main');
+}
+
 export async function onRequestGet(context) {
   const { env } = context;
   if (!env.DB) {
@@ -64,6 +81,9 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
   let current = await readCurrentState(env.DB, stateId);
+  if (stateId === 'main' && !current.exists) {
+    current = await ensureMainStateFromLegacyDemo(env.DB);
+  }
 
   // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
   if (stateId === 'demo' && !current.exists) {
@@ -124,6 +144,7 @@ export async function onRequestPut(context) {
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  if (stateId === 'main') await ensureMainStateFromLegacyDemo(env.DB);
   const current = await readCurrentState(env.DB, stateId);
   const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
@@ -204,6 +225,7 @@ export async function onRequestPatch(context) {
   await ensureTable(env.DB);
   const url = new URL(request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  if (stateId === 'main') await ensureMainStateFromLegacyDemo(env.DB);
 
   // Keep the demo seed behavior even if PATCH is the first request.
   if (stateId === 'demo') {
