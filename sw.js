@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-main-v31-competition-final';
+const CACHE_NAME = 'lemon-main-v31-member-default-none';
 const APP_SHELL = [
   '/',
   '/index.html',
