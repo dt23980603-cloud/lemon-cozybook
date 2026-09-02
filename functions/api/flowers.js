@@ -4,7 +4,7 @@ const JSON_HEADERS = {
 };
 
 const GRADES = new Set(['N', 'R', 'SR', 'SSR', 'UR']);
-const BASE_SEED_VERSION = 'main_v28_base_356';
+const BASE_SEED_VERSION = 'main_v31_base_356';
 
 async function ensureTables(db) {
   await db.prepare(`
@@ -120,16 +120,7 @@ async function seedBaseFlowers(env, request) {
 
   await ensureTables(env.DB);
   const current = await env.DB.prepare(`SELECT meta_value FROM app_meta WHERE meta_key = 'flower_seed_version'`).first();
-  const currentSeedVersion = String(current?.meta_value || '');
-  // demo_v28에서 이미 초기 356개가 D1에 이전된 경우 메인 승격 시 다시 시드하지 않습니다.
-  // 재시드는 사용자가 삭제한 기본 꽃을 되살릴 수 있으므로 기존 시드 버전을 호환 처리합니다.
-  if (currentSeedVersion === BASE_SEED_VERSION || currentSeedVersion === 'demo_v28_base_356') {
-    if (currentSeedVersion !== BASE_SEED_VERSION) {
-      await env.DB.prepare(`
-        UPDATE app_meta SET meta_value = ?1, updated_at = ?2
-        WHERE meta_key = 'flower_seed_version'
-      `).bind(BASE_SEED_VERSION, Date.now()).run();
-    }
+  if (current?.meta_value === BASE_SEED_VERSION) {
     const count = await env.DB.prepare(`SELECT COUNT(*) AS count FROM flowers`).first();
     return new Response(JSON.stringify({ ok: true, seeded: false, count: Number(count?.count || 0) }), { headers: JSON_HEADERS });
   }

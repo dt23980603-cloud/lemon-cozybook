@@ -22,6 +22,7 @@ function sanitizePatch(input) {
 
   if (Array.isArray(input?.members)) patch.members = input.members;
   if (isPlainObject(input?.checks)) patch.checks = input.checks;
+  if (isPlainObject(input?.flowerOptions)) patch.flowerOptions = input.flowerOptions;
 
   return patch;
 }
@@ -49,25 +50,6 @@ async function readCurrentState(db, stateId = 'main') {
   };
 }
 
-// 메인 승격 안전장치: 같은 D1 안에 main 행이 없고 예전 demo 행만 남아 있으면
-// demo 상태를 main으로 1회 복제합니다. 기존 main이 있으면 절대 덮어쓰지 않습니다.
-async function ensureMainStateFromLegacyDemo(db) {
-  const main = await readCurrentState(db, 'main');
-  if (main.exists) return main;
-
-  const demo = await readCurrentState(db, 'demo');
-  if (!demo.exists) return main;
-
-  const copiedAt = Date.now();
-  await db.prepare(`
-    INSERT INTO guild_state (id, state_json, updated_at)
-    VALUES ('main', ?1, ?2)
-    ON CONFLICT(id) DO NOTHING
-  `).bind(JSON.stringify(demo.state), copiedAt).run();
-
-  return readCurrentState(db, 'main');
-}
-
 export async function onRequestGet(context) {
   const { env } = context;
   if (!env.DB) {
@@ -81,9 +63,6 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
   let current = await readCurrentState(env.DB, stateId);
-  if (stateId === 'main' && !current.exists) {
-    current = await ensureMainStateFromLegacyDemo(env.DB);
-  }
 
   // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
   if (stateId === 'demo' && !current.exists) {
@@ -144,7 +123,6 @@ export async function onRequestPut(context) {
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
-  if (stateId === 'main') await ensureMainStateFromLegacyDemo(env.DB);
   const current = await readCurrentState(env.DB, stateId);
   const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
@@ -183,6 +161,21 @@ function jsonPathForCheckKey(key) {
   return `$.checks."${escaped}"`;
 }
 
+function isValidOptionChange(change) {
+  return change && typeof change === 'object'
+    && typeof change.key === 'string'
+    && change.key.length > 0
+    && change.key.length <= 400
+    && Number.isInteger(change.value)
+    && change.value >= 0
+    && change.value <= 4;
+}
+
+function jsonPathForOptionKey(key) {
+  const escaped = key.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return `$.flowerOptions."${escaped}"`;
+}
+
 async function ensureStateRow(db, stateId) {
   const now = Date.now();
   await db.prepare(`
@@ -215,8 +208,15 @@ export async function onRequestPatch(context) {
     ? body.changes.filter(isValidCheckChange)
     : [];
 
-  if (changes.length === 0 || changes.length > 200) {
-    return new Response(JSON.stringify({ error: 'No valid checkbox changes were provided.' }), {
+  const optionChanges = Array.isArray(body?.optionChanges)
+    ? body.optionChanges.filter(isValidOptionChange)
+    : [];
+
+  if ((changes.length === 0 && optionChanges.length === 0) ||
+      changes.length > 200 ||
+      optionChanges.length > 200 ||
+      changes.length + optionChanges.length > 250) {
+    return new Response(JSON.stringify({ error: 'No valid guild state changes were provided.' }), {
       status: 400,
       headers: JSON_HEADERS
     });
@@ -225,7 +225,6 @@ export async function onRequestPatch(context) {
   await ensureTable(env.DB);
   const url = new URL(request.url);
   const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
-  if (stateId === 'main') await ensureMainStateFromLegacyDemo(env.DB);
 
   // Keep the demo seed behavior even if PATCH is the first request.
   if (stateId === 'demo') {
@@ -245,13 +244,13 @@ export async function onRequestPatch(context) {
   await ensureStateRow(env.DB, stateId);
   const updatedAt = Date.now();
 
-  // Each checkbox is patched inside the JSON document with SQL itself instead
-  // of replacing the whole checks object. This prevents two browsers from
-  // overwriting each other's recent checkbox edits.
-  const statements = changes.map(change => {
+  const statements = [];
+
+  // Existing checkbox patch behavior.
+  changes.forEach(change => {
     const path = jsonPathForCheckKey(change.key);
     if (change.checked) {
-      return env.DB.prepare(`
+      statements.push(env.DB.prepare(`
         UPDATE guild_state
         SET state_json = json_set(
               CASE
@@ -263,10 +262,11 @@ export async function onRequestPatch(context) {
             ),
             updated_at = ?3
         WHERE id = ?1
-      `).bind(stateId, path, updatedAt);
+      `).bind(stateId, path, updatedAt));
+      return;
     }
 
-    return env.DB.prepare(`
+    statements.push(env.DB.prepare(`
       UPDATE guild_state
       SET state_json = json_remove(
             CASE
@@ -277,7 +277,43 @@ export async function onRequestPatch(context) {
           ),
           updated_at = ?3
       WHERE id = ?1
-    `).bind(stateId, path, updatedAt);
+    `).bind(stateId, path, updatedAt));
+  });
+
+  // Flower option scores are stored sparsely by member + flower.
+  // +0 removes the key; +1~+4 stores only the score value.
+  optionChanges.forEach(change => {
+    const path = jsonPathForOptionKey(change.key);
+
+    if (change.value > 0) {
+      statements.push(env.DB.prepare(`
+        UPDATE guild_state
+        SET state_json = json_set(
+              CASE
+                WHEN json_type(state_json, '$.flowerOptions') = 'object' THEN state_json
+                ELSE json_set(state_json, '$.flowerOptions', json('{}'))
+              END,
+              ?2,
+              ?3
+            ),
+            updated_at = ?4
+        WHERE id = ?1
+      `).bind(stateId, path, change.value, updatedAt));
+      return;
+    }
+
+    statements.push(env.DB.prepare(`
+      UPDATE guild_state
+      SET state_json = json_remove(
+            CASE
+              WHEN json_type(state_json, '$.flowerOptions') = 'object' THEN state_json
+              ELSE json_set(state_json, '$.flowerOptions', json('{}'))
+            END,
+            ?2
+          ),
+          updated_at = ?3
+      WHERE id = ?1
+    `).bind(stateId, path, updatedAt));
   });
 
   await env.DB.batch(statements);
@@ -285,7 +321,8 @@ export async function onRequestPatch(context) {
   return new Response(JSON.stringify({
     ok: true,
     updatedAt,
-    changed: changes.length
+    changedChecks: changes.length,
+    changedOptions: optionChanges.length
   }), { headers: JSON_HEADERS });
 }
 
