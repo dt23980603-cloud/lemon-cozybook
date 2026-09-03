@@ -1,13 +1,14 @@
-const CACHE_NAME = 'lemon-main-v31-member-default-none';
+const CACHE_NAME = 'lemon-main-v4.1-release';
 const APP_SHELL = [
   '/',
   '/index.html',
-  '/page1.html',
   '/page2.html',
   '/page3.html',
   '/page4.html',
   '/page5.html',
   '/page6.html',
+  '/page7.html',
+  '/page8.html',
   '/flower-data-all.js',
   '/images/branding/lemon-favicon.png',
   '/images/banners/lemon-banner-pc.png',
