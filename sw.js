@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-main-v4.1-release';
+const CACHE_NAME = 'lemon-main-v4.2-competition-mission-status';
 const APP_SHELL = [
   '/',
   '/index.html',
