@@ -35,7 +35,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
 
         .right-panel {
@@ -46,22 +46,120 @@
         }
 
         .notice-box {
-            background-color: #fff;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 15px;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 2px 0 4px;
+            text-align: center;
         }
 
         .notice-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 12px;
+            font-size: 0.96rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #555;
+            text-align: center;
+        }
+
+        .notice-content {
+            text-align: center;
         }
 
         .notice-content p {
-            margin: 6px 0;
-            line-height: 1.5;
-            font-size: 0.95rem;
+            margin: 3px 0;
+            line-height: 1.4;
+            font-size: 0.78rem;
+            color: #777;
+            text-align: center;
+        }
+
+        /* main_v4.3: 바로가기 아이콘 메뉴 */
+        .quick-section,
+        .main-menu-section {
+            width: 100%;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            margin: 2px 0 12px;
+        }
+
+        .section-divider-line {
+            height: 1px;
+            flex: 1;
+            background: #d5d5d5;
+        }
+
+        .section-divider h2 {
+            margin: 0;
+            flex: 0 0 auto;
+            color: #666;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .quick-item {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 7px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 700;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .quick-icon {
+            width: 72px;
+            height: 72px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #d2d2d2;
+            border-radius: 22px;
+            background: #fff;
+            box-shadow: 0 3px 10px rgba(0,0,0,.07);
+            font-size: 2rem;
+            line-height: 1;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .quick-starsoul .quick-icon {
+            background: linear-gradient(145deg, #f7f2ff 0%, #eef1ff 100%);
+            border-color: #cfc6e4;
+        }
+
+        .quick-item:hover .quick-icon {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,.11);
+            background-color: #fff9db;
+        }
+
+        .quick-name {
+            width: 100%;
+            text-align: center;
+            font-size: .82rem;
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+
+        .main-menu-section {
+            margin-top: 2px;
         }
 
         /* 버튼 메뉴 스타일 */
@@ -139,36 +237,40 @@
             font-weight: bold;
         }
 
-        /* 표 헤더 / 제목 스타일 */
+        /* 메인페이지 업데이트 내역 표만 배경 그래픽 톤에 맞게 부드럽게 보정 */
         .table-header-box {
-            background-color: #fff9db;
-            border: 1px solid #333;
+            background: linear-gradient(180deg, #fffaf0 0%, #fff3d1 100%);
+            border: 1.5px solid #eadfbc;
             border-bottom: none;
-            padding: 8px 15px;
+            border-radius: 18px 18px 0 0;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 6px 15px rgba(173, 149, 70, 0.08);
         }
 
         .table-title {
-            font-weight: bold;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 0.96rem;
+            color: #52391e;
         }
 
         .btn-reset {
-            background-color: #ff6b6b;
-            color: #fff;
-            border: 1px solid #d93838;
-            padding: 4px 10px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border-radius: 4px;
+            background: linear-gradient(180deg, #fff5f5 0%, #ffe5e5 100%);
+            color: #bf4f4f;
+            border: 1px solid #e1b0b0;
+            padding: 5px 11px;
+            font-size: 0.79rem;
+            font-weight: 700;
+            border-radius: 999px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.2s;
         }
 
         .btn-reset:hover {
-            background-color: #fa5252;
+            background: linear-gradient(180deg, #fff0f0 0%, #ffd9d9 100%);
+            transform: translateY(-1px);
         }
 
         .btn-update-delete {
@@ -214,6 +316,49 @@
             flex-shrink: 0;
         }
 
+
+        #updateTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1.5px solid #eadfbc;
+            border-top: none;
+            border-radius: 0 0 18px 18px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.96);
+            box-shadow: 0 8px 18px rgba(173, 149, 70, 0.08);
+        }
+
+        #updateTable th,
+        #updateTable td {
+            border: 0;
+            border-right: 1px solid #eadfbc;
+            border-bottom: 1px solid #eadfbc;
+            background: rgba(255,255,255,0.92);
+        }
+
+        #updateTable th {
+            background: linear-gradient(180deg, #fffdf6 0%, #fff6df 100%);
+            color: #5b4323;
+            font-weight: 700;
+        }
+
+        #updateTable th:last-child,
+        #updateTable td:last-child {
+            border-right: none;
+        }
+
+        #updateTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        #updateTable tbody tr:nth-child(odd) td {
+            background: #fffdf8;
+        }
+
+        #updateTable tbody tr:nth-child(even) td {
+            background: #fffaf1;
+        }
+
         /* 업데이트 내역 본문: PC/모바일 공통 가독성 */
         #updateTable tbody td {
             color: #111;
@@ -228,6 +373,68 @@
         #updateTable .grade-text-SR { color: #8b4fb3; }
         #updateTable .grade-text-SSR { color: #d88900; }
         #updateTable .grade-text-UR { color: #c94d4d; }
+        #updateTable .update-content-cell {
+            text-align: left;
+            padding: 10px 12px;
+            width: 100%;
+        }
+
+        #updateTable .update-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #updateTable .update-item-main {
+            min-width: 0;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #updateTable .update-thumb-wrap {
+            flex: 0 0 58px;
+            width: 58px;
+            height: 58px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #eadfbc;
+            background: linear-gradient(180deg, #fffef8 0%, #fff8e9 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+
+        #updateTable .update-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #updateTable .update-text {
+            min-width: 0;
+            flex: 1;
+        }
+
+        #updateTable .update-meta {
+            font-size: .72rem;
+            color: #999;
+            margin-bottom: 2px;
+        }
+
+        #updateTable .update-label {
+            font-weight: bold;
+            word-break: keep-all;
+            line-height: 1.35;
+        }
+
+        #updateTable .update-sub {
+            margin-top: 4px;
+            font-size: .82rem;
+            color: #666;
+            line-height: 1.35;
+        }
 
         /* 입력 양식 스타일: PC/모바일 공통으로 외곽선을 연하게 */
         .add-form-card {
@@ -348,29 +555,59 @@
             .right-panel {
                 width: 100%;
                 min-width: 0;
-                gap: 14px;
+                gap: 10px;
             }
 
-            /* 1. NOTICE를 화면 너비 전체로 */
+            /* 1. NOTICE는 보조 안내처럼 가볍게 표시 */
             .notice-box {
                 width: 100%;
                 box-sizing: border-box;
-                padding: 14px;
+                padding: 0 2px 2px;
+                text-align: center;
             }
 
             .notice-title {
-                font-size: 1.02rem;
-                line-height: 1.45;
-                margin-bottom: 10px;
+                font-size: 0.84rem;
+                line-height: 1.35;
+                margin-bottom: 4px;
+                text-align: center;
             }
 
             .notice-content p {
-                font-size: 0.9rem;
-                line-height: 1.55;
-                margin: 7px 0;
+                font-size: 0.70rem;
+                line-height: 1.42;
+                margin: 2px 0;
+                text-align: center;
             }
 
-            /* 2. 메뉴 버튼은 NOTICE 아래 2열 */
+            /* 2. 바로가기 아이콘 메뉴 */
+            .section-divider {
+                gap: 9px;
+                margin: 1px 0 10px;
+            }
+
+            .section-divider h2 {
+                font-size: .72rem;
+            }
+
+            .quick-menu {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                max-width: 100%;
+            }
+
+            .quick-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 18px;
+                font-size: 1.65rem;
+            }
+
+            .quick-name {
+                font-size: .72rem;
+            }
+
+            /* 3. 레몬공책 메뉴 버튼은 2열 */
             .button-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 10px;
@@ -403,7 +640,7 @@
                 word-break: keep-all;
             }
 
-            /* 3. 업데이트 영역을 버튼 아래 전체 너비로 */
+            /* 4. 업데이트 영역을 버튼 아래 전체 너비로 */
             .right-panel > div:first-child {
                 width: 100%;
                 min-width: 0;
@@ -416,10 +653,11 @@
                 width: 100%;
                 padding: 9px 10px;
                 gap: 8px;
+                border-radius: 16px 16px 0 0;
             }
 
             .table-title {
-                font-size: 0.96rem;
+                font-size: 0.9rem;
             }
 
             .btn-reset {
@@ -442,7 +680,7 @@
 
             #updateTable th,
             #updateTable td {
-                padding: 6px 4px;
+                padding: 7px 5px;
                 font-size: 0.72rem;
                 line-height: 1.35;
                 word-break: break-word;
@@ -508,6 +746,275 @@
 
         }
 
+    
+
+        /* main_v4.3: v4.24 레이아웃/비율 유지 + 메인페이지 디자인만 개선 */
+        body {
+            background:
+                radial-gradient(circle at 9% 92%, rgba(255, 227, 104, .18), transparent 16%),
+                radial-gradient(circle at 95% 88%, rgba(165, 203, 92, .10), transparent 14%),
+                linear-gradient(180deg, #fffdf7 0%, #f9f9f7 48%, #f6f5f1 100%);
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -55px;
+            width: 205px;
+            height: 205px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: .64;
+            background:
+                radial-gradient(circle at 42% 45%, #ffe66c 0 25%, #f8d94f 25% 38%, transparent 39%),
+                radial-gradient(circle at 80% 28%, #75b654 0 9%, transparent 10%),
+                radial-gradient(circle at 88% 42%, #8ac566 0 8%, transparent 9%);
+        }
+        body::before { left: -58px; }
+        body::after { right: -62px; transform: scale(.84) rotate(14deg); opacity: .46; }
+
+        .notice-title {
+            color: #493322;
+            font-size: 1.06rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+        .notice-content p {
+            color: #786e66;
+            font-size: .80rem;
+        }
+
+        .section-divider-line {
+            background: linear-gradient(90deg, rgba(215,207,194,0), #d9cfbf 20%, #d9cfbf 80%, rgba(215,207,194,0));
+        }
+        .section-divider h2 { color:#675a50; }
+
+        /* 바로가기: 기존 3열 크기 안에서 흰색 카드/아이콘 모양 유지 */
+        .quick-menu { gap: 12px; max-width: 520px; }
+        .quick-item {
+            position: relative;
+            min-height: 118px;
+            padding: 12px 6px 10px;
+            border: 1px solid #e7dfd1;
+            border-radius: 20px;
+            background: rgba(255,255,255,.92);
+            box-shadow: 0 6px 16px rgba(81,60,26,.055), inset 0 1px 0 rgba(255,255,255,.95);
+            overflow: hidden;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .quick-item::before {
+            content:'';
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 18% 17%, rgba(255,244,200,.48), transparent 22%),
+                linear-gradient(180deg, rgba(255,255,255,.38), transparent 58%);
+            pointer-events:none;
+        }
+        .quick-item:hover { transform: translateY(-2px); box-shadow:0 9px 20px rgba(81,60,26,.10); }
+        .quick-icon {
+            position:relative;
+            z-index:1;
+            width: 60px;
+            height: 60px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            font-size: 2rem;
+        }
+        .quick-starsoul .quick-icon {
+            background: transparent;
+            border: 0;
+        }
+        .quick-name { position:relative; z-index:1; color:#403126; font-size:.78rem; }
+        .quick-sub {
+            position:relative;
+            z-index:1;
+            display:block;
+            color:#988e84;
+            font-size:.58rem;
+            line-height:1.25;
+            text-align:center;
+            font-weight:400;
+            white-space:nowrap;
+        }
+        .quick-spark {
+            position:absolute;
+            z-index:1;
+            top:10px;
+            right:12px;
+            width:6px;
+            height:6px;
+            border-radius:50%;
+            background:#f4d46c;
+            box-shadow:0 0 0 4px rgba(244,212,108,.12);
+        }
+
+        /* 4개 메인 메뉴: 일러스트 카드 느낌 유지 + 조금 더 밝고 슬림하게 */
+        .lemon-menu-grid { gap: 14px; }
+        .lemon-menu-card.nav-btn {
+            position: relative;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            min-height: 94px;
+            padding: 9px 42px 9px 12px;
+            border: 1.6px solid #dfc568;
+            border-radius: 24px;
+            background: linear-gradient(180deg, #fffef7 0%, #fffbf0 42%, #fff7df 76%, #fff4d0 100%);
+            box-shadow: 0 8px 17px rgba(171,141,46,.08), inset 0 1px 0 rgba(255,255,255,.97);
+            overflow: hidden;
+            font-size: inherit;
+            text-align: left;
+        }
+        .lemon-menu-card.nav-btn::before {
+            content:'';
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 11% 21%, rgba(255,255,255,.82), transparent 16%),
+                radial-gradient(circle at 87% 20%, rgba(255,246,182,.78), transparent 18%),
+                radial-gradient(circle at 19% 82%, rgba(255,255,255,.36), transparent 20%),
+                linear-gradient(135deg, rgba(255,255,255,.20), transparent 45%);
+            pointer-events:none;
+        }
+        .lemon-menu-card.nav-btn::after {
+            content:'';
+            position:absolute;
+            right:-20px;
+            bottom:-24px;
+            width:104px;
+            height:104px;
+            border-radius:50%;
+            background:radial-gradient(circle, rgba(255,238,141,.34), rgba(255,238,141,.08) 62%, transparent 64%);
+            pointer-events:none;
+        }
+        .lemon-menu-card.nav-btn:hover {
+            background: linear-gradient(180deg, #fffef4 0%, #fff9e8 46%, #fff4cf 100%);
+            border-color:#d6b94f;
+            transform: translateY(-2px);
+            box-shadow:0 11px 20px rgba(171,141,46,.14);
+        }
+        .menu-art {
+            position:relative;
+            z-index:1;
+            flex: 0 0 70px;
+            width:70px;
+            height:70px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:0;
+            background:transparent;
+        }
+        .menu-art img {
+            width:68px;
+            height:68px;
+            object-fit:contain;
+            display:block;
+            filter: drop-shadow(0 4px 8px rgba(55,44,18,.10));
+        }
+        .menu-copy {
+            position:relative;
+            z-index:1;
+            min-width:0;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            gap:4px;
+            flex:1;
+        }
+        .menu-copy strong {
+            color:#3a2919;
+            font-size:.98rem;
+            line-height:1.22;
+            word-break:keep-all;
+            letter-spacing:-.01em;
+        }
+        .menu-copy small {
+            color:#817365;
+            font-size:.64rem;
+            line-height:1.35;
+            font-weight:500;
+            word-break:keep-all;
+        }
+        .menu-arrow {
+            position:absolute;
+            z-index:1;
+            right:12px;
+            top:50%;
+            transform:translateY(-50%);
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f2c943;
+            color:#fff;
+            font-size:1.28rem;
+            line-height:1;
+            box-shadow:0 5px 10px rgba(204,157,9,.19);
+        }
+        .menu-flower { background:linear-gradient(180deg,#fffef6 0%,#fffbf0 48%,#fff7de 100%) !important; }
+        .menu-battle { background:linear-gradient(180deg,#fffef5 0%,#fffbef 48%,#fff6dc 100%) !important; }
+        .menu-upgrade { background:linear-gradient(180deg,#fffef7 0%,#fffbf1 48%,#fff7e1 100%) !important; }
+        .menu-guide { background:linear-gradient(180deg,#fffef7 0%,#fffbf2 48%,#fff7e0 100%) !important; }
+
+        /* 업데이트 표는 메인 배경과 어울리도록 동일 톤 유지 */
+        .table-header-box {
+            background: linear-gradient(180deg,#fffaf0,#fff3d1);
+            border-color:#eadfbc;
+        }
+        th { background-color:#fff9df; }
+
+        @media (max-width: 480px) {
+            body::before, body::after { width:140px; height:140px; bottom:-45px; }
+            .notice-title { font-size:.88rem; }
+            .notice-content p { font-size:.69rem; }
+            .quick-menu { gap:7px; }
+            .quick-item {
+                min-height:88px;
+                padding:8px 3px 7px;
+                border-radius:16px;
+            }
+            .quick-icon { width:48px; height:48px; border-radius:0; font-size:1.7rem; }
+            .quick-name { font-size:.66rem; }
+            .quick-sub { font-size:.47rem; }
+            .quick-spark { top:7px; right:8px; width:5px; height:5px; }
+
+            .lemon-menu-grid { gap:10px; }
+            .lemon-menu-card.nav-btn {
+                min-height:96px;
+                padding:7px 8px 8px;
+                flex-direction:column;
+                justify-content:center;
+                gap:5px;
+                text-align:center;
+                border-radius:18px;
+            }
+            .menu-art { width:52px; height:52px; flex-basis:52px; }
+            .menu-art img { width:50px; height:50px; }
+            .menu-copy { align-items:center; gap:3px; width:100%; }
+            .menu-copy strong { font-size:.70rem; line-height:1.2; }
+            .menu-copy small { display:none; }
+            .menu-arrow {
+                top:9px;
+                right:9px;
+                transform:none;
+                width:24px;
+                height:24px;
+                font-size:1rem;
+            }
+        }
+
     </style>
 
     <link rel="manifest" href="/manifest.webmanifest">
@@ -541,25 +1048,73 @@
         <!-- 좌측 영역 (공지사항 & 이동 버튼 4개) -->
         <div class="left-panel">
             <div class="notice-box">
-                <div class="notice-title">레몬 NOTICE | 새로운 길드원 여러분 환영합니다!</div>
+                <div class="notice-title">🍋 레몬 NOTICE | 새로운 길드원 여러분 환영합니다! 💛</div>
                 <div class="notice-content">
-                    <p># 새로운 길드원 여러분! 🍋레몬에 오신 것을 환영합니다!💖<br>
-                    <p># 인게임 공식 업데이트 후, 1-3일 이내에 최대한 추가하도록 노력하겠습니다:)
-                    <p># 해당 웹사이트에 대해서 추가 의견사항 있으시면 언제든지 자유롭게 말씀해주세요 :)</p>
+                    <p># 새로운 길드원 여러분! 👏 레몬에 오신 것을 환영합니다! 💖</p>
+                    <p># 인게임 공식 업데이트 후, 1~3일 이내에 최대한 추가하도록 노력하겠습니다 :)</p>
+                    <p># 해당 웹사이트에 대해 추가 의견사항 있으시면 언제든지 자유롭게 말씀해주세요 :)</p>
                 </div>
             </div>
 
-            <!-- 페이지 이동 버튼 -->
-            <div class="button-grid">
-                <a href="page5.html" class="nav-btn">🌷전체 꽃 도감🌷</a>
-                <a href="page2.html" class="nav-btn">⚔️경쟁전 임무 계산⚔️</a>
-                <a href="page3.html" class="nav-btn">💡꽃 개량 효율표💡</a>
-                <a href="page6.html" class="nav-btn">📖 코지 공략모음 📖</a>
-                <div class="nav-row-three">
-                    <a href="https://open.kakao.com/o/gdYMYczi" class="nav-btn" target="_blank" rel="noopener noreferrer">💬 레몬 오픈채팅</a>
-                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="nav-btn" target="_blank" rel="noopener noreferrer">🌿 코지 공식 라운지</a>
+            <!-- 바로가기 -->
+            <section class="quick-section" aria-labelledby="quickSectionTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="quickSectionTitle">바로가기</h2>
+                    <span class="section-divider-line"></span>
                 </div>
-            </div>
+                <div class="quick-menu">
+                    <a href="page1.html" class="quick-item quick-starsoul" aria-label="스타소울">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">🌌</span>
+                        <span class="quick-name">스타소울</span>
+                        <span class="quick-sub">시즌 별자리 콘텐츠</span>
+                    </a>
+                    <a href="https://open.kakao.com/o/gdYMYczi" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="레몬 오픈카톡">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">💬</span>
+                        <span class="quick-name">오픈카톡</span>
+                        <span class="quick-sub">길드원 소통 공간</span>
+                    </a>
+                    <a href="https://game.naver.com/lounge/The_Cozy_Florist/home" class="quick-item" target="_blank" rel="noopener noreferrer" aria-label="코지 공식라운지">
+                        <span class="quick-spark" aria-hidden="true"></span>
+                        <span class="quick-icon" aria-hidden="true">🌳</span>
+                        <span class="quick-name">공식라운지</span>
+                        <span class="quick-sub">공식 소식 바로가기</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 레몬공책 메뉴 -->
+            <section class="main-menu-section" aria-labelledby="mainMenuTitle">
+                <div class="section-divider">
+                    <span class="section-divider-line"></span>
+                    <h2 id="mainMenuTitle">레몬공책 메뉴</h2>
+                    <span class="section-divider-line"></span>
+                </div>
+                <div class="button-grid lemon-menu-grid">
+                    <a href="page5.html" class="nav-btn lemon-menu-card menu-flower">
+                        <span class="menu-art"><img src="images/ui/main-flower-book.webp" alt=""></span>
+                        <span class="menu-copy"><strong>🌷 전체 꽃 도감 🌷</strong><small>모든 꽃과 길드 보유 현황</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page2.html" class="nav-btn lemon-menu-card menu-battle">
+                        <span class="menu-art"><img src="images/ui/main-swords.webp" alt=""></span>
+                        <span class="menu-copy"><strong>⚔️ 경쟁전 임무 계산 ⚔️</strong><small>목표 점수에 맞는 임무 계산</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page3.html" class="nav-btn lemon-menu-card menu-upgrade">
+                        <span class="menu-art"><img src="images/ui/main-bulb.webp" alt=""></span>
+                        <span class="menu-copy"><strong>💡 꽃 개량 효율표 💡</strong><small>레벨별 개량 수치를 한눈에</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                    <a href="page6.html" class="nav-btn lemon-menu-card menu-guide">
+                        <span class="menu-art"><img src="images/ui/main-guide-book.webp" alt=""></span>
+                        <span class="menu-copy"><strong>📖 코지 공략모음 📖</strong><small>코지 공략과 정보를 한곳에</small></span>
+                        <span class="menu-arrow" aria-hidden="true">›</span>
+                    </a>
+                </div>
+            </section>
         </div>
 
         <!-- 우측 영역: 전체 꽃 도감에서 자동 생성되는 업데이트 내역 -->
@@ -572,12 +1127,11 @@
                 <table id="updateTable">
                     <thead>
                         <tr>
-                            <th style="width: 26%;">수정 일자</th>
-                            <th style="width: 74%;">내용</th>
+                            <th>내용</th>
                         </tr>
                     </thead>
                     <tbody id="updateTbody">
-                        <tr><td colspan="2" style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
+                        <tr><td style="color:#888;">업데이트 내역을 불러오는 중입니다.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -599,26 +1153,36 @@
                 timeZone: 'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'
             }).formatToParts(new Date(timestamp));
             const map = Object.fromEntries(parts.map(p => [p.type, p.value]));
-            return `${map.year}.${map.month}.${map.day}`;
+            const year2 = String(map.year || '').slice(-2);
+            return `${year2}.${map.month}.${map.day}`;
+        }
+
+        function getUpdateImageSrc(item) {
+            if (!item || !item.flowerKey) return '';
+            const version = item.createdAt || Date.now();
+            return `/api/flower-image/${encodeURIComponent(item.flowerKey)}?v=${encodeURIComponent(version)}`;
         }
 
         function renderTable() {
             const tbody = document.getElementById('updateTbody');
             if (!updateList.length) {
-                tbody.innerHTML = '<tr><td colspan="2" style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
+                tbody.innerHTML = '<tr><td style="color:#888;">등록된 업데이트 내역이 없습니다.</td></tr>';
                 return;
             }
             tbody.innerHTML = updateList.map(item => {
                 const label = item.category ? `[${item.category}] ${item.name}` : item.name;
                 const score = item.guildScore == null ? '-' : `${item.guildScore}점`;
+                const imageSrc = getUpdateImageSrc(item);
                 return `<tr>
-                    <td>${escapeHtml(formatUpdateDate(item.createdAt))}</td>
-                    <td style="text-align:left;padding-left:12px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                            <div style="min-width:0;flex:1;">
-                                <div style="font-size:.72rem;color:#999;margin-bottom:2px;">${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
-                                <div style="font-weight:bold;word-break:keep-all;">${escapeHtml(label)}</div>
-                                <div style="margin-top:4px;font-size:.82rem;color:#666;"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                    <td class="update-content-cell">
+                        <div class="update-item">
+                            <div class="update-item-main">
+                                <div class="update-thumb-wrap">${imageSrc ? `<img class="update-thumb" src="${escapeHtml(imageSrc)}" alt="${escapeHtml(label)}" loading="lazy" onerror="this.closest('.update-thumb-wrap').style.display='none'">` : ''}</div>
+                                <div class="update-text">
+                                    <div class="update-meta">${escapeHtml(formatUpdateDate(item.createdAt))} · ${item.action === 'edit' ? '정보 수정' : '신규 추가'}</div>
+                                    <div class="update-label">${escapeHtml(label)}</div>
+                                    <div class="update-sub"><span class="grade-text grade-text-${escapeHtml(item.grade)}">${escapeHtml(item.grade)}</span> · ⚔️ ${escapeHtml(score)}</div>
+                                </div>
                             </div>
                             <div class="update-actions">
                                 <button type="button" class="btn-update-flower" data-flower-key="${escapeHtml(item.flowerKey || '')}">꽃 정보 보기</button>
@@ -690,7 +1254,7 @@
                 renderTable();
             } catch (error) {
                 console.warn('업데이트 내역 D1 조회 실패', error);
-                document.getElementById('updateTbody').innerHTML = '<tr><td colspan="2" style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
+                document.getElementById('updateTbody').innerHTML = '<tr><td style="color:#a66;">업데이트 내역을 불러오지 못했습니다.</td></tr>';
             }
         }
 
@@ -703,7 +1267,7 @@
     </script>
 
 
-    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">main_v4.2</div>
+    <div id="site-version" style="position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none;">main_v4.3</div>
 
 
 <script id="pwa-auto-update-script">

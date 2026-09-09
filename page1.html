@@ -1,262 +1,723 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>코지 공략모음 | 레몬</title>
-    <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        *, body, input, button, select, textarea {
-            font-family: 'Gowun Batang', serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스타소울 | 레몬</title>
+  <link rel="icon" type="image/png" href="images/branding/lemon-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,body,button,input,select,textarea{font-family:'Gowun Batang',serif!important;box-sizing:border-box}
+    :root{
+      --ink:#32343b;--muted:#777983;--line:#dddde5;--cream:#fffdf7;
+      --lemon:#fff4b8;--lemon-deep:#f5d76e;--lav:#f1edff;--blue:#eef4ff;
+      --green:#eef7eb;--pink:#fff0f5;
+    }
+    body{
+      margin:0;background:
+      radial-gradient(circle at 12% 2%,rgba(255,233,132,.24),transparent 24rem),
+      radial-gradient(circle at 92% 12%,rgba(189,190,255,.18),transparent 27rem),
+      #f8f8f8;color:var(--ink)
+    }
+    button,select,input{font:inherit}
+    button{cursor:pointer}
+    .page{width:min(1120px,calc(100% - 32px));margin:18px auto 70px}
+    .hero{
+      position:relative;overflow:hidden;
+      background:rgba(255,255,255,.88);
+      border:1px solid #e3e0d7;border-radius:22px;padding:18px 20px 20px;
+      box-shadow:0 8px 28px rgba(50,45,30,.055)
+    }
+    .hero:before,.hero:after{content:"✦";position:absolute;color:#ecd470;opacity:.55;font-size:1.35rem}
+    .hero:before{right:40px;top:22px}.hero:after{right:88px;top:58px;font-size:.8rem}
+    .header{position:relative;display:flex;align-items:center;justify-content:center;min-height:42px}
+    .back{
+      position:absolute;left:0;top:50%;transform:translateY(-50%);
+      width:42px;height:42px;display:flex;align-items:center;justify-content:center;text-decoration:none
+    }
+    .back img{width:100%;height:100%;object-fit:contain}
+    .title-wrap{min-width:0;width:100%;text-align:center;padding:0 50px}
+    h1{margin:0;font-size:1.55rem;letter-spacing:-.03em}
+    .intro{margin:7px auto 0;max-width:600px;text-align:center;color:#777;font-size:.84rem;line-height:1.55}
+    .guide-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:17px}
+    .guide-btn{
+      min-height:72px;border:1px solid #d5d3cd;border-radius:17px;padding:12px 16px;
+      display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;color:#353535;
+      background:#fff;text-decoration:none;box-shadow:0 3px 10px rgba(0,0,0,.035);
+      transition:.18s transform,.18s box-shadow
+    }
+    .guide-btn:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.075)}
+    .guide-primary{background:linear-gradient(145deg,#fff8cd,#ffef9c);border-color:#e8cf73}
+    .guide-secondary{background:linear-gradient(145deg,#f5f2ff,#e9edff);border-color:#cfcae8}
+    .guide-icon{
+      flex:0 0 auto;font-size:1.7rem;line-height:1;
+      transform:translateX(-4px)
+    }
+    .guide-copy{
+      display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;
+      flex:0 1 auto;min-width:0;
+      transform:translateX(-4px)
+    }
+    .guide-copy strong{font-size:1rem}.guide-copy small{font-size:.72rem;color:#777}
 
-        body {
-            background-color: #f9f9f9;
-            margin: 15px;
-            color: #333;
-        }
+    .starlight-card{
+      margin-top:16px;border:1px solid #dfd9c9;border-radius:20px;
+      background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,249,218,.92));
+      padding:16px;box-shadow:0 5px 18px rgba(64,50,10,.045)
+    }
+    .starlight-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .starlight-title{margin:0;font-size:1.02rem}
+    .starlight-desc{margin:4px 0 0;color:#757575;font-size:.76rem;line-height:1.45}
+    .participation{
+      flex:0 0 auto;background:#fff;border:1px solid #e2dbc7;border-radius:999px;
+      padding:6px 10px;font-size:.7rem;font-weight:700;white-space:nowrap
+    }
+    .birth-form{display:grid;grid-template-columns:minmax(140px,1.4fr) .7fr .7fr auto;gap:8px;margin-top:13px}
+    .birth-form select,.birth-form button{
+      min-height:42px;border:1px solid #cfcfcf;border-radius:11px;background:#fff;padding:8px 10px;color:#333
+    }
+    .birth-form button{
+      padding-inline:15px;background:#fff0a9;border-color:#ddc560;font-weight:700;white-space:nowrap
+    }
+    .birth-form button:hover{background:#ffe986}
+    .birth-status{min-height:20px;margin-top:7px;text-align:center;color:#666;font-size:.72rem}
+    .unfound{
+      margin-top:8px;padding-top:9px;border-top:1px dashed #ddd2b6;text-align:center;
+      font-size:.7rem;color:#8a8170;line-height:1.45
+    }
 
-        .container-full {
-            width: 100%;
-            box-sizing: border-box;
-            background: #fff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
-        }
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:22px 2px 11px}
+    .section-head h2{margin:0;font-size:1.2rem}
+    .section-head p{margin:4px 0 0;color:#818181;font-size:.72rem}
+    .section-count{font-size:.72rem;color:#7b7b7b}
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
+    .zodiac-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .zodiac-card{
+      min-width:0;overflow:hidden;background:rgba(255,255,255,.93);
+      border:1px solid #dfdfdf;border-radius:18px;box-shadow:0 4px 14px rgba(0,0,0,.045)
+    }
+    .zodiac-media{
+      position:relative;aspect-ratio:2.05/1;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(145deg,#f5f3ff,#eef3ff);overflow:hidden
+    }
+    .zodiac-media img{width:100%;height:100%;object-fit:cover;display:block}
+    .zodiac-media.placeholder{background:linear-gradient(145deg,#f0eff7,#faf8ef)}
+    .zodiac-media.unreleased img{filter:brightness(.52) saturate(.88)}
+    .zodiac-media.unreleased.placeholder{background:linear-gradient(145deg,#cfcbdc,#ddd8ce)}
+    .zodiac-media.unreleased .placeholder-inner{color:#f1eef8}
+    .zodiac-media.unreleased .placeholder-symbol{color:#fff7a6}
+    .zodiac-media.unreleased::after{
+      content:'';position:absolute;inset:0;background:rgba(20,18,29,.22);pointer-events:none
+    }
+    .release-badge{
+      position:absolute;top:9px;right:9px;z-index:2;
+      padding:5px 10px;border-radius:999px;
+      background:rgba(40,36,56,.82);border:1px solid rgba(255,255,255,.18);
+      color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.02em;
+      box-shadow:0 2px 8px rgba(0,0,0,.18)
+    }
+    .placeholder-inner{text-align:center;color:#aaa;padding:8px}
+    .placeholder-symbol{display:block;font-size:2rem;margin-bottom:3px;color:#9792b7}
+    .placeholder-inner small{font-size:.65rem}
+    .flower-pill{
+      position:absolute;left:9px;bottom:8px;max-width:calc(100% - 18px);
+      background:rgba(255,255,255,.88);backdrop-filter:blur(5px);
+      border:1px solid rgba(255,255,255,.95);border-radius:999px;
+      padding:5px 9px;font-size:.65rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+    }
+    .zodiac-body{padding:11px 12px 12px}
+    .zodiac-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+    .zodiac-name{margin:0;font-size:1rem;line-height:1.3}
+    .zodiac-period{margin:3px 0 0;font-size:.7rem;color:#777}
+    .member-total{font-size:.68rem;color:#777;background:#f7f7f7;border-radius:999px;padding:4px 7px;white-space:nowrap}
+    .guild-label{margin-top:10px;font-size:.65rem;color:#989898}
+    .member-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;min-height:24px}
+    .member-tag{
+      display:inline-flex;align-items:center;max-width:100%;
+      border:1px solid #cfcfcf;border-radius:999px;padding:4px 7px;
+      font-size:.68rem;font-weight:700;background:#fafafa;white-space:nowrap
+    }
+    .member-tag.role-길드장{border-color:#df9d9d;background:#fff1f1;color:#9b3535}
+    .member-tag.role-부길드장{border-color:#e4c071;background:#fff8df;color:#87620a}
+    .member-tag.role-임원{border-color:#c6a4e3;background:#f8f0ff;color:#74449a}
+    .member-tag.role-정예{border-color:#9fc5e3;background:#eef7ff;color:#346f9d}
+    .member-tag.role-멤버{border-color:#a9cf9e;background:#f0f9ed;color:#47733d}
+        .none-tag{font-size:.66rem;color:#aaa;padding:4px 0}
+    .zodiac-more-btn{
+      display:inline-flex;align-items:center;min-height:24px;padding:4px 7px;
+      border:1px dashed #aaa;border-radius:999px;background:#fff9db;
+      color:#555;font-size:.64rem;font-weight:700;cursor:pointer;white-space:nowrap
+    }
+    .zodiac-more-btn:hover{background:#fff1ad}
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .source-note{
+      margin-top:16px;padding:11px 13px;border:1px dashed #d7d3c7;border-radius:14px;
+      text-align:center;color:#8a877f;background:rgba(255,255,255,.58);font-size:.66rem;line-height:1.45
+    }
 
-        .nav-btn-home {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-        }
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+      padding:16px;background:rgba(0,0,0,.42);z-index:5000
+    }
+    .modal.show{display:flex}
+    .dialog{
+      width:min(900px,100%);max-height:min(88vh,900px);
+      background:#fff;border-radius:20px;box-shadow:0 18px 55px rgba(0,0,0,.24);
+      overflow:hidden;display:flex;flex-direction:column
+    }
+    .dialog-head{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:16px 18px;border-bottom:1px solid #ececec;background:#fffdf8
+    }
+    .dialog h3{margin:0;font-size:1.1rem}
+    .dialog-close{border:0;background:transparent;font-size:1.55rem;color:#777;padding:3px 7px}
+    .dialog-scroll{overflow:auto;padding:16px 18px 20px;-webkit-overflow-scrolling:touch}
+    .modal-intro{
+      margin:0 0 13px;padding:11px 12px;border-radius:13px;
+      background:#fff9da;color:#625a3d;font-size:.76rem;line-height:1.55
+    }
+    .reward-dev-notice{
+      margin:0 0 12px;padding:9px 11px;border:1px solid rgba(214,74,74,.34);
+      border-radius:11px;background:rgba(255,92,92,.11);
+      color:#a84343;font-size:.69rem;line-height:1.5;text-align:center
+    }
+    .reward-dev-notice strong{font-weight:700;color:#963838}
 
-        .nav-btn-home:hover {
-            background-color: #fff0f0;
-            transform: translateY(-2px);
-        }
+    .flow-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;margin:0 0 15px}
+    .flow-chip{
+      padding:6px 9px;border:1px solid #ddd8c8;border-radius:999px;background:#fff;
+      font-size:.68rem;font-weight:700;white-space:nowrap
+    }
+    .flow-arrow{font-size:.7rem;color:#aaa}
+    .guide-section{
+      border:1px solid #e3e3e3;border-radius:15px;padding:13px 14px;margin-top:10px;background:#fff
+    }
+    .guide-section h4{margin:0 0 7px;font-size:.88rem}
+    .guide-section p,.guide-section li{font-size:.72rem;line-height:1.6;color:#5f6066}
+    .guide-section p{margin:5px 0}
+    .guide-section ul{margin:5px 0 0;padding-left:19px}
+    .tip{
+      margin-top:8px;padding:8px 10px;border-radius:10px;
+      background:#fff6c9;color:#5e542f;font-size:.69rem;line-height:1.5
+    }
+    .mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+    .mini-card{border:1px solid #e1e1e1;border-radius:13px;padding:11px;background:#fafafa}
+    .mini-card strong{display:block;font-size:.79rem;margin-bottom:4px}
+    .mini-card span,.mini-card p{font-size:.68rem;color:#686a70;line-height:1.5;margin:0}
+    .info-table-wrap{overflow-x:auto;margin-top:8px}
+    .info-table{width:100%;border-collapse:collapse;min-width:520px;background:#fff}
+    .info-table th,.info-table td{
+      border:1px solid #dedede;padding:7px 8px;text-align:center;
+      font-size:.68rem;line-height:1.4;vertical-align:middle
+    }
+    .info-table th{background:#fff8d9;font-weight:700;color:#504b39}
+    .table-caption{margin:6px 0 0;font-size:.62rem;color:#8b8b8b;line-height:1.45}
+    .reward-highlight{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px
+    }
+    .reward-stat{
+      text-align:center;border:1px solid #ddd;border-radius:12px;padding:9px 7px;background:#fafafa
+    }
+    .reward-stat b{display:block;font-size:.95rem;margin-bottom:2px}
+    .reward-stat span{font-size:.62rem;color:#777}
+    #site-version{position:fixed;left:12px;bottom:10px;font-size:11px;color:#aaa;z-index:9999;pointer-events:none;user-select:none}
 
-        .guide-card {
-            background-color: #f8f9fa;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 15px;
-        }
-
-        .guide-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .guide-title {
-            font-weight: bold;
-            font-size: 1.05rem;
-        }
-
-        .guide-count {
-            font-size: 0.85rem;
-            color: #666;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: #fff;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background: #fff;
-            min-width: 720px;
-        }
-
-        th, td {
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            padding: 11px 12px;
-            font-size: 0.92rem;
-            vertical-align: middle;
-        }
-
-        th:last-child, td:last-child {
-            border-right: none;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        th {
-            background-color: #fff9db;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        td.number {
-            width: 80px;
-            text-align: center;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        td.guide-name {
-            text-align: left;
-            font-weight: bold;
-        }
-
-        td.link-cell {
-            width: 150px;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .btn-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 14px;
-            background-color: #fff0f0;
-            border: 1px solid #333;
-            border-radius: 5px;
-            color: #333;
-            font-size: 0.86rem;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-link:hover {
-            background-color: #fae0e0;
-            transform: translateY(-1px);
-        }
-
-        @media (max-width: 700px) {
-            body { margin: 8px; }
-            .container-full { padding: 12px; }
-            .header h1 { font-size: 1.25rem !important; }
-            .guide-title-row { align-items: flex-start; flex-direction: column; }
-        }
-        .back-icon { width: 100%; height: 100%; object-fit: contain; display: block; }
-
-        /* 이미지 전용 뒤로가기 버튼 */
-        .nav-btn-home {
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            overflow: visible !important;
-        }
-        .nav-btn-home:hover {
-            border: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            filter: brightness(.78);
-        }
-        .nav-btn-home:active { filter: brightness(.6); }
-        .nav-btn-home .back-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-            border: 0;
-        }
-</style>
-
-    <link rel="manifest" href="/manifest.webmanifest">
-    <meta name="theme-color" content="#ffe680">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="레몬">
-    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    @media(max-width:620px){
+      .page{width:calc(100% - 18px);margin-top:9px}
+      .hero{padding:12px 11px 14px;border-radius:18px}
+      .header{min-height:36px}
+      .back{width:36px;height:36px}
+      .title-wrap{padding:0 42px}
+      h1{font-size:1.28rem}.intro{font-size:.72rem;margin-top:4px}
+      .guide-actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+      .guide-btn{min-height:61px;border-radius:14px;padding:9px 10px;gap:8px}
+      .guide-icon{font-size:1.3rem;transform:translateX(-3px)}
+      .guide-copy{width:auto;padding:0;transform:translateX(-3px)}
+      .guide-copy strong{font-size:.83rem}.guide-copy small{font-size:.62rem}
+      .starlight-card{padding:12px;border-radius:16px;margin-top:11px}
+      .starlight-title{font-size:.9rem}.starlight-desc{font-size:.66rem}
+      .participation{font-size:.61rem;padding:5px 8px}
+      .birth-form{
+        grid-template-columns:minmax(0,1.45fr) minmax(44px,.55fr) minmax(44px,.55fr) auto;
+        gap:4px;width:100%
+      }
+      .birth-form select{
+        min-width:0;width:100%;font-size:.58rem;padding:5px 4px;min-height:36px
+      }
+      .birth-form select:first-child{grid-column:auto}
+      .birth-form button{
+        grid-column:auto;min-height:36px;padding:5px 7px;font-size:.57rem;white-space:nowrap
+      }
+      .birth-status,.unfound{font-size:.62rem}
+      .section-head{margin-top:16px}.section-head h2{font-size:1rem}.section-head p,.section-count{font-size:.62rem}
+      .zodiac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .zodiac-card{border-radius:14px}
+      .zodiac-media{aspect-ratio:1.35/1}
+      .flower-pill{left:6px;bottom:6px;max-width:calc(100% - 12px);font-size:.54rem;padding:4px 6px}
+      .zodiac-body{padding:8px}
+      .zodiac-name{font-size:.79rem}.zodiac-period{font-size:.58rem}.member-total{font-size:.54rem;padding:3px 5px}
+      .guild-label{font-size:.55rem;margin-top:7px}.member-tags{gap:3px;margin-top:4px}
+      .member-tag{font-size:.55rem;padding:3px 5px}.none-tag{font-size:.55rem}.zodiac-more-btn{min-height:20px;padding:3px 5px;font-size:.52rem}
+      .placeholder-symbol{font-size:1.55rem}.placeholder-inner small{font-size:.52rem}
+      .modal{padding:8px}
+      .dialog{max-height:92vh;border-radius:16px}
+      .dialog-head{padding:12px 13px}
+      .dialog h3{font-size:.96rem}
+      .dialog-scroll{padding:12px}
+      .modal-intro{font-size:.66rem;padding:9px 10px}.reward-dev-notice{font-size:.6rem;padding:8px 9px;margin-bottom:9px}
+      .flow-chip{font-size:.59rem;padding:5px 7px}
+      .guide-section{padding:10px 11px;border-radius:12px}
+      .guide-section h4{font-size:.78rem}
+      .guide-section p,.guide-section li{font-size:.63rem}
+      .tip{font-size:.61rem}
+      .mini-grid{grid-template-columns:1fr;gap:7px}
+      .mini-card strong{font-size:.7rem}.mini-card span,.mini-card p{font-size:.61rem}
+      .reward-highlight{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+      .reward-stat{padding:7px 4px}.reward-stat b{font-size:.78rem}.reward-stat span{font-size:.53rem}
+      .info-table th,.info-table td{font-size:.61rem;padding:6px}
+      .release-badge{top:7px;right:7px;padding:4px 8px;font-size:.58rem}
+    }
+    @media(max-width:360px){
+      .guide-copy small{display:none}
+      .guide-copy strong{font-size:.77rem}
+      .guide-icon{font-size:1.18rem;transform:translateX(-3px)}
+      .birth-form{grid-template-columns:minmax(0,1.35fr) 42px 42px auto;gap:3px}
+      .birth-form select{font-size:.52rem;padding:4px 2px;min-height:34px}
+      .birth-form button{min-height:34px;padding:4px 5px;font-size:.51rem}
+      .zodiac-name{font-size:.73rem}
+    }
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#ffe680">
 </head>
 <body>
-    <div class="container-full">
-        <div class="header">
-            <div class="header-left">
-                <a href="index.html" class="nav-btn-home" title="메인으로 돌아가기"><img src="images/ui/back-button.png" alt="뒤로가기" class="back-icon"></a>
-                <h1 style="margin: 0; font-size: 1.5rem;">📖코지 공략모음📖</h1>
-            </div>
-        </div>
+<main class="page">
+  <section class="hero">
+    <header class="header">
+      <a href="index.html" class="back" title="메인으로 돌아가기" aria-label="메인으로 돌아가기">
+        <img src="images/ui/back-button.png" alt="뒤로가기">
+      </a>
+      <div class="title-wrap">
+        <h1>🌌 스타소울</h1>
+        <p class="intro">별자리 꽃과 함께하는 스타소울 콘텐츠를 한눈에 확인해보세요.</p>
+      </div>
+    </header>
 
-        <div class="guide-card">
-            <div class="guide-title-row">
-                <div class="guide-title">🍋 더 코지 플로리스트 공략 모음</div>
-                <div class="guide-count">총 14개 공략</div>
-            </div>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 80px;">번호</th>
-                            <th>공략 제목</th>
-                            <th style="width: 150px;">링크</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="number">[1]</td><td class="guide-name">정원 가꾸기 기초</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224292427133" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[3]</td><td class="guide-name">꽃 레벨업 &lt;기초편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224295387584" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[4]</td><td class="guide-name">꽃 레벨업 &lt;심화편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224296400664" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[5]</td><td class="guide-name">꽃 개량편 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224298448501" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[6]</td><td class="guide-name">꽃 개량편 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224299540036" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[7]</td><td class="guide-name">꽃 개량 &lt;옵션편&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224303199524" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[8]</td><td class="guide-name">친구와 단짝 콘텐츠</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224308121203" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[9]</td><td class="guide-name">주민주문과 단체주문</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224309981639" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[10]</td><td class="guide-name">길드 컨텐츠 &lt;1&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224317729143" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[11]</td><td class="guide-name">길드 컨텐츠 &lt;2&gt;</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224323966005" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[12]</td><td class="guide-name">길드 컨텐츠-무,소과금 편</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224324714114" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[13]</td><td class="guide-name">길드 재배 활용하기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224331951854" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[14]</td><td class="guide-name">4대 이벤트 알기</td><td class="link-cell"><a class="btn-link" href="https://blog.naver.com/stylishangelic/224364919820" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                        <tr><td class="number">[15]</td><td class="guide-name">스타소울 알기</td><td class="link-cell"><a class="btn-link" href="https://game.naver.com/lounge/The_Cozy_Florist/board/detail/7675397" target="_blank" rel="noopener noreferrer">링크 바로가기</a></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="guide-actions">
+      <a href="page9.html" class="guide-btn guide-primary">
+        <span class="guide-icon">📖</span>
+        <span class="guide-copy"><strong>스타소울 공략</strong><small>게임 가이드 보기</small></span>
+      </a>
+      <button type="button" class="guide-btn guide-secondary" data-open-modal="rewardModal">
+        <span class="guide-icon">✨</span>
+        <span class="guide-copy"><strong>시즌 / 보상</strong><small>시즌 정보 확인</small></span>
+      </button>
     </div>
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((err) => console.warn('PWA service worker registration failed:', err));
-    });
-  }
-</script>
+    <section class="starlight-card" aria-labelledby="starlightTitle">
+      <div class="starlight-head">
+        <div>
+          <h2 class="starlight-title" id="starlightTitle">✨ 별빛 질문이 도착했어요!</h2>
+          <p class="starlight-desc">닉네임과 생일의 월·일을 선택하면 내 별자리 카드에 닉네임이 나타나요.</p>
+        </div>
+        <div class="participation" id="participation">0 / 0명 참여</div>
+      </div>
+      <div class="birth-form">
+        <select id="memberSelect" aria-label="길드원 닉네임 선택"><option value="">닉네임 선택</option></select>
+        <select id="birthMonth" aria-label="생일 월"><option value="">월</option></select>
+        <select id="birthDay" aria-label="생일 일"><option value="">일</option></select>
+        <button type="button" id="birthSave">🌟 내 별자리 등록하기</button>
+      </div>
+      <div class="birth-status" id="birthStatus">길드원 본인이 직접 참여해 주세요.</div>
+      <div class="unfound" id="unfound"></div>
+    </section>
+  </section>
 
+  <div class="section-head">
+    <div><h2>⭐ 별자리 카드</h2><p>게임의 별자리 기간을 기준으로 자동 분류됩니다.</p></div>
+    <div class="section-count" id="registeredCount"></div>
+  </div>
+
+  <section class="zodiac-grid" id="zodiacGrid" aria-live="polite"></section>
+
+  <div class="source-note">※ 공략·보상 수치는 제공받은 스타소울 공략 자료를 기준으로 정리했습니다. 시즌에 따라 실제 게임 내용은 달라질 수 있습니다.</div>
+</main>
+
+<div class="modal" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <h3 id="rewardModalTitle">✨ 시즌 / 보상</h3>
+      <button class="dialog-close" data-close-modal aria-label="닫기">×</button>
+    </div>
+    <div class="dialog-scroll">
+      <div class="reward-dev-notice" role="note">
+        <strong>🚧 스타소울 가이드를 계속 업데이트하고 있어요.</strong><br>
+        현재 이미지와 세부 내용을 순차적으로 추가 중이며, 가이드 글은 먼저 확인하실 수 있습니다.
+      </div>
+      <p class="modal-intro">시즌 동안 스타소울을 꾸준히 수집하면 스타코인을 모아 전용 상점 보상을 노릴 수 있습니다. 패스 여부에 따라 하루 획득 가능한 스타소울 수가 크게 달라집니다.</p>
+
+      <section class="guide-section">
+        <h4>⭐ 스타코인 획득량</h4>
+        <div class="reward-highlight">
+          <div class="reward-stat"><b>2 / 4</b><span>R 일반 / 2배</span></div>
+          <div class="reward-stat"><b>3 / 6</b><span>SR 일반 / 2배</span></div>
+          <div class="reward-stat"><b>4 / 8</b><span>SSR 일반 / 2배</span></div>
+        </div>
+        <p>등급이 높을수록 기본 코인이 많지만, <b>2배 보너스가 적용된 낮은 등급</b>이 일반 높은 등급보다 효율적일 수 있습니다.</p>
+      </section>
+
+      <section class="guide-section">
+        <h4>🎫 소울 패스</h4>
+        <p>새 별자리 시즌과 함께 등장하는 패스입니다. 자료에서는 무료 밀령과 고급 밀령을 기준으로 설명하고 있습니다.</p>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <strong>무료 밀령</strong>
+            <span>내 밭 수확 18 + 친구 서리 4 = <b>하루 최대 22개</b></span>
+          </div>
+          <div class="mini-card">
+            <strong>고급 밀령</strong>
+            <span>기본 22개 + 수확 상한 12회 추가 = <b>하루 최대 34개</b></span>
+          </div>
+        </div>
+        <div class="tip">SR 2배 보너스(1개당 6코인)만 돌린다고 가정한 자료 예시: 무료 22×6 = 132코인 / 고급 34×6 = 204코인.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>📋 밀령 일일 임무</h4>
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead><tr><th>미션</th><th>경험치</th><th>비고</th></tr></thead>
+            <tbody>
+              <tr><td>임의의 꽃 60회 재배</td><td>50</td><td>-</td></tr>
+              <tr><td>임의의 꽃 60회 수확</td><td>50</td><td>-</td></tr>
+              <tr><td>아무 꽃 스타소울 5회 수확</td><td>50</td><td>스타소울 보유자</td></tr>
+              <tr><td>친구 스타소울 3회 협력</td><td>50</td><td>친구 목록 악수</td></tr>
+              <tr><td>스타소울의 꽃 정령 3개 훔치기</td><td>50</td><td>-</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🏆 밀령 도전 임무</h4>
+        <div class="info-table-wrap">
+          <table class="info-table">
+            <thead><tr><th>미션</th><th>경험치</th><th>자료 기준 참고</th></tr></thead>
+            <tbody>
+              <tr><td>꽃 정령 60개 훔치기</td><td>400</td><td>1일 4회 기준 15일</td></tr>
+              <tr><td>아무 꽃 스타소울 215회 수확</td><td>400</td><td>기본 23일 / 패스 14일</td></tr>
+              <tr><td>친구 스타소울 60회 협력</td><td>400</td><td>하루 3회 기준 20일</td></tr>
+              <tr><td>스타소울 랜덤박스 12회 뽑기</td><td>400</td><td>컬렉션 뽑기</td></tr>
+              <tr><td>스타소울 누적 100회 파견</td><td>400</td><td>일일 횟수 제한 없음</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <h4>🛍️ 스타소울 상점</h4>
+        <p>스타코인으로 <b>꽃, 화병, 타이틀, 액자 등</b>을 구매할 수 있습니다. 상점 상품에는 <b>구매 기한</b>이 있으므로 목표 보상의 종료일을 확인하는 것이 중요합니다.</p>
+        <div class="tip">🍋 자료의 무과금 팁 · 친구 밭 서리를 매일 챙겨 스타코인을 모으고, 구매 우선순위가 필요하다면 화병을 우선 고려하는 방식이 소개되어 있습니다.</div>
+      </section>
+
+      <section class="guide-section">
+        <h4>💫 다음 시즌으로 이어지는 재화</h4>
+        <div class="mini-grid">
+          <div class="mini-card"><strong>꽃의 돌</strong><span>별자리 꽃 뽑기 후 남은 수량 이월</span></div>
+          <div class="mini-card"><strong>별 포인트</strong><span>중복 별자리 꽃 뽑기로 획득, 다음 시즌 사용 가능</span></div>
+          <div class="mini-card"><strong>컬렉션 랜덤박스 티켓</strong><span>남은 티켓을 다음 시즌에도 사용 가능</span></div>
+          <div class="mini-card"><strong>2배 보너스 꽃</strong><span>매주 변경되므로 수확 시점 기준으로 확인</span></div>
+        </div>
+      </section>
+
+      <p class="table-caption">※ 패키지 가격·특정 시즌 상품명처럼 변동 가능성이 큰 내용은 이번 페이지에서 제외했습니다.</p>
+    </div>
+  </div>
+</div>
+
+<div id="site-version">main_v4.3</div>
+
+<script>
+const API='/api/guild-state';
+const roleOrder={'길드장':1,'부길드장':2,'임원':3,'정예':4,'멤버':5};
+
+const zodiacData=[
+  {key:'aquarius',symbol:'♒',name:'물병자리',period:'1월 20일 ~ 2월 18일',start:120,end:218,image:'images/guides/starsoul/zodiac/aquarius.webp',flower:'물병자리 · 창공의 별자취',unreleased:true},
+  {key:'pisces',symbol:'♓',name:'물고기자리',period:'2월 19일 ~ 3월 20일',start:219,end:320,image:'images/guides/starsoul/zodiac/pisces.webp',flower:'물고기자리 · 보랏빛 심연의 별자리',unreleased:true},
+  {key:'aries',symbol:'♈',name:'양자리',period:'3월 21일 ~ 4월 19일',start:321,end:419,image:'images/guides/starsoul/zodiac/aries.webp',flower:'양자리 · 별자국 두루마리',unreleased:true},
+  {key:'taurus',symbol:'♉',name:'황소자리',period:'4월 20일 ~ 5월 20일',start:420,end:520,image:'images/flowers/UR/F0019.webp',flower:'황소자리 · 풍요의 별그림'},
+  {key:'gemini',symbol:'♊',name:'쌍둥이자리',period:'5월 21일 ~ 6월 21일',start:521,end:621,image:'images/flowers/UR/F0014.webp',flower:'쌍둥이자리 · 성수쌍영'},
+  {key:'cancer',symbol:'♋',name:'게자리',period:'6월 22일 ~ 7월 22일',start:622,end:722,image:'images/flowers/UR/F0005.webp',flower:'게자리 · 물결치는 별무리'},
+  {key:'leo',symbol:'♌',name:'사자자리',period:'7월 23일 ~ 8월 22일',start:723,end:822,image:'images/flowers/UR/F0011.webp',flower:'사자자리 · 금관의 빛나는 정원'},
+  {key:'virgo',symbol:'♍',name:'처녀자리',period:'8월 23일 ~ 9월 23일',start:823,end:923,image:'images/flowers/UR/F0353.webp',flower:'처녀자리 · 블루스톤 가든 위스퍼'},
+  {key:'libra',symbol:'♎',name:'천칭자리',period:'9월 24일 ~ 10월 22일',start:924,end:1022,image:'',flower:'미출시',unreleased:true},
+  {key:'scorpio',symbol:'♏',name:'전갈자리',period:'10월 23일 ~ 11월 22일',start:1023,end:1122,image:'',flower:'미출시',unreleased:true},
+  {key:'sagittarius',symbol:'♐',name:'사수자리',period:'11월 23일 ~ 12월 24일',start:1123,end:1224,image:'images/guides/starsoul/zodiac/sagittarius.webp',flower:'사수자리 · 유성의 화염 깃털',unreleased:true},
+  {key:'capricorn',symbol:'♑',name:'염소자리',period:'12월 25일 ~ 1월 19일',start:1225,end:119,image:'images/guides/starsoul/zodiac/capricorn.webp',flower:'염소자리 · 달물결 별의 커튼',unreleased:true}
+];
+
+let members=[];
+let memberBirthdays={};
+
+const memberSelect=document.getElementById('memberSelect');
+const monthSelect=document.getElementById('birthMonth');
+const daySelect=document.getElementById('birthDay');
+const birthSave=document.getElementById('birthSave');
+const birthStatus=document.getElementById('birthStatus');
+const participation=document.getElementById('participation');
+const registeredCount=document.getElementById('registeredCount');
+const unfound=document.getElementById('unfound');
+const zodiacGrid=document.getElementById('zodiacGrid');
+
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+
+function sortedMembers(){
+  return [...members].sort((a,b)=>(roleOrder[a.role]||99)-(roleOrder[b.role]||99)||String(a.name||'').localeCompare(String(b.name||''),'ko-KR'));
+}
+function birthdayToValue(month,day){return `${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`}
+function parseBirthday(value){
+  const match=/^(\d{2})-(\d{2})$/.exec(String(value||''));
+  return match?{month:Number(match[1]),day:Number(match[2])}:null;
+}
+function zodiacFor(month,day){
+  const value=month*100+day;
+  return zodiacData.find(z=>{
+    if(z.start<=z.end)return value>=z.start&&value<=z.end;
+    return value>=z.start||value<=z.end;
+  })||null;
+}
+function memberZodiac(memberId){
+  const b=parseBirthday(memberBirthdays[memberId]);
+  return b?zodiacFor(b.month,b.day):null;
+}
+function fillMonths(){
+  monthSelect.innerHTML='<option value="">월</option>'+Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}월</option>`).join('');
+}
+function fillDays(){
+  const m=Number(monthSelect.value);
+  const days=m?[31,29,31,30,31,30,31,31,30,31,30,31][m-1]:31;
+  const current=Number(daySelect.value);
+  daySelect.innerHTML='<option value="">일</option>'+Array.from({length:days},(_,i)=>`<option value="${i+1}">${i+1}일</option>`).join('');
+  if(current&&current<=days)daySelect.value=String(current);
+}
+function renderMemberSelect(){
+  const current=memberSelect.value;
+  memberSelect.innerHTML='<option value="">닉네임 선택</option>'+sortedMembers().map(m=>{
+    const done=memberBirthdays[m.id]?' ✓':'';
+    return `<option value="${esc(m.id)}">${esc(m.name)}${done}</option>`;
+  }).join('');
+  if(members.some(m=>m.id===current))memberSelect.value=current;
+}
+function updateFormForMember(){
+  const member=members.find(m=>m.id===memberSelect.value);
+  if(!member){
+    monthSelect.value='';fillDays();daySelect.value='';
+    birthSave.textContent='🌟 내 별자리 등록하기';
+    birthStatus.textContent='길드원 본인이 직접 참여해 주세요.';
+    return;
+  }
+  const b=parseBirthday(memberBirthdays[member.id]);
+  if(b){
+    monthSelect.value=String(b.month);fillDays();daySelect.value=String(b.day);
+    const z=zodiacFor(b.month,b.day);
+    birthSave.textContent='✨ 내 별자리 수정하기';
+    birthStatus.textContent=`${member.name}님은 ${z?z.symbol+' '+z.name:'별자리'}로 등록되어 있어요.`;
+  }else{
+    monthSelect.value='';fillDays();daySelect.value='';
+    birthSave.textContent='🌟 내 별자리 등록하기';
+    birthStatus.textContent=`${member.name}님의 생일 월·일을 선택해주세요.`;
+  }
+}
+function renderParticipation(){
+  const validIds=new Set(members.map(m=>m.id));
+  const registered=Object.keys(memberBirthdays).filter(id=>validIds.has(id)&&parseBirthday(memberBirthdays[id])).length;
+  participation.textContent=`${registered} / ${members.length}명 참여`;
+  registeredCount.textContent=`등록 ${registered}명`;
+  const missing=sortedMembers().filter(m=>!parseBirthday(memberBirthdays[m.id]));
+  unfound.innerHTML=missing.length
+    ? `🌙 아직 별을 찾지 못한 길드원 ${missing.length}명 · ${missing.map(m=>esc(m.name)).join(' · ')}`
+    : '✨ 모든 길드원이 자신의 별을 찾았어요!';
+}
+const expandedZodiacMembers=new Set();
+
+function formatBirthdayLabel(memberId){
+  const b=parseBirthday(memberBirthdays[memberId]);
+  return b?`${b.month}월 ${b.day}일`:'';
+}
+function zodiacVisibleMemberLimit(){
+  return window.matchMedia('(max-width:620px)').matches?2:3;
+}
+
+function renderZodiac(){
+  const grouped=new Map(zodiacData.map(z=>[z.key,[]]));
+  sortedMembers().forEach(m=>{
+    const z=memberZodiac(m.id);
+    if(z)grouped.get(z.key).push(m);
+  });
+  zodiacGrid.innerHTML=zodiacData.map(z=>{
+    const owners=grouped.get(z.key)||[];
+    const unreleasedClass=z.unreleased?' unreleased':'';
+    const unreleasedBadge=z.unreleased?'<span class="release-badge">미출시</span>':'';
+    const media=z.image
+      ? `<div class="zodiac-media${unreleasedClass}"><img src="${esc(z.image)}" alt="${esc(z.name)}" loading="lazy">${unreleasedBadge}<div class="flower-pill">${esc(z.flower)}</div></div>`
+      : `<div class="zodiac-media placeholder${unreleasedClass}">${unreleasedBadge}<div class="placeholder-inner"><span class="placeholder-symbol">${z.symbol}</span><small>${z.unreleased?'별자리 아이템 미출시':'별자리 꽃 이미지 준비중'}</small></div></div>`;
+    const expanded=expandedZodiacMembers.has(z.key);
+    const limit=zodiacVisibleMemberLimit();
+    const visibleOwners=expanded?owners:owners.slice(0,limit);
+    const hiddenCount=Math.max(0,owners.length-visibleOwners.length);
+    const ownerTags=visibleOwners.map(m=>{
+      const birthday=formatBirthdayLabel(m.id);
+      const label=birthday?`${m.name} · ${birthday}`:m.name;
+      return `<span class="member-tag role-${esc(m.role||'멤버')}" title="${esc(m.role||'멤버')}">${esc(label)}</span>`;
+    }).join('');
+    const moreButton=owners.length>limit
+      ? `<button type="button" class="zodiac-more-btn" data-zodiac-more="${esc(z.key)}">${expanded?'접기':`더보기 +${hiddenCount}`}</button>`
+      : '';
+    const tags=owners.length
+      ? ownerTags+moreButton
+      : '<span class="none-tag">아직 등록된 길드원이 없어요.</span>';
+    return `<article class="zodiac-card" data-zodiac="${esc(z.key)}">
+      ${media}
+      <div class="zodiac-body">
+        <div class="zodiac-top">
+          <div><h3 class="zodiac-name">${z.symbol} ${esc(z.name)}</h3><p class="zodiac-period">${esc(z.period)}</p></div>
+          <span class="member-total">${owners.length}명</span>
+        </div>
+        <div class="guild-label">우리 길드</div>
+        <div class="member-tags">${tags}</div>
+      </div>
+    </article>`;
+  }).join('');
+}
+zodiacGrid.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-zodiac-more]');
+  if(!btn)return;
+  const key=btn.dataset.zodiacMore;
+  if(expandedZodiacMembers.has(key))expandedZodiacMembers.delete(key);
+  else expandedZodiacMembers.add(key);
+  renderZodiac();
+});
+
+let zodiacResizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(zodiacResizeTimer);
+  zodiacResizeTimer=setTimeout(renderZodiac,120);
+});
+
+function localSave(){
+  localStorage.setItem('guild_members',JSON.stringify(members));
+  localStorage.setItem('guild_member_birthdays',JSON.stringify(memberBirthdays));
+}
+function renderAll(){
+  renderMemberSelect();renderParticipation();renderZodiac();updateFormForMember();
+}
+async function loadState(){
+  try{
+    const r=await fetch(API,{cache:'no-store'});
+    if(!r.ok)throw new Error(`GET ${r.status}`);
+    const p=await r.json();
+    if(p.exists&&p.state){
+      members=Array.isArray(p.state.members)?p.state.members:[];
+      memberBirthdays=p.state.memberBirthdays&&typeof p.state.memberBirthdays==='object'?p.state.memberBirthdays:{};
+    }else{
+      members=JSON.parse(localStorage.getItem('guild_members')||'[]');
+      memberBirthdays=JSON.parse(localStorage.getItem('guild_member_birthdays')||'{}');
+    }
+    localSave();renderAll();
+  }catch(e){
+    console.warn('길드 상태 조회 실패',e);
+    members=JSON.parse(localStorage.getItem('guild_members')||'[]');
+    memberBirthdays=JSON.parse(localStorage.getItem('guild_member_birthdays')||'{}');
+    renderAll();
+    birthStatus.textContent='온라인 동기화를 불러오지 못해 기기 저장 정보를 표시하고 있어요.';
+  }
+}
+async function saveBirthday(){
+  const member=members.find(m=>m.id===memberSelect.value);
+  const month=Number(monthSelect.value),day=Number(daySelect.value);
+  if(!member)return alert('먼저 본인의 닉네임을 선택해주세요.');
+  if(!month||!day)return alert('생일의 월과 일을 모두 선택해주세요.');
+  const max=[31,29,31,30,31,30,31,31,30,31,30,31][month-1];
+  if(day<1||day>max)return alert('생일 날짜를 다시 확인해주세요.');
+
+  const birthday=birthdayToValue(month,day);
+  const before=memberBirthdays[member.id]||null;
+  const z=zodiacFor(month,day);
+
+  if(before===birthday)return alert(`이미 ${z.symbol} ${z.name}로 등록되어 있어요.`);
+  if(before){
+    const old=parseBirthday(before),oldZ=old?zodiacFor(old.month,old.day):null;
+    const text=`${member.name}님의 별자리를\n${oldZ?oldZ.symbol+' '+oldZ.name:'기존 정보'} → ${z.symbol} ${z.name}\n으로 수정할까요?`;
+    if(!confirm(text))return;
+  }
+
+  memberBirthdays[member.id]=birthday;
+  localSave();renderAll();
+  birthStatus.textContent=`✨ ${member.name}님이 ${z.symbol} ${z.name}의 별로 등록되었어요!`;
+  birthSave.disabled=true;
+
+  try{
+    const r=await fetch(API,{
+      method:'PATCH',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({birthdayChanges:[{memberId:member.id,birthday}]})
+    });
+    const p=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(p.error||`PATCH ${r.status}`);
+  }catch(e){
+    console.warn('생일 저장 실패',e);
+    if(before===null)delete memberBirthdays[member.id];else memberBirthdays[member.id]=before;
+    localSave();renderAll();
+    alert('생일 저장에 실패했습니다. 다시 시도해주세요.');
+  }finally{
+    birthSave.disabled=false;
+  }
+}
+
+fillMonths();fillDays();
+monthSelect.addEventListener('change',fillDays);
+memberSelect.addEventListener('change',updateFormForMember);
+birthSave.addEventListener('click',saveBirthday);
+
+function openInfoModal(id){
+  const modal=document.getElementById(id);
+  if(!modal)return;
+  modal.classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeInfoModal(modal){
+  if(!modal)return;
+  modal.classList.remove('show');
+  if(!document.querySelector('.modal.show'))document.body.style.overflow='';
+}
+document.querySelectorAll('[data-open-modal]').forEach(btn=>{
+  btn.addEventListener('click',()=>openInfoModal(btn.dataset.openModal));
+});
+document.querySelectorAll('[data-close-modal]').forEach(btn=>{
+  btn.addEventListener('click',()=>closeInfoModal(btn.closest('.modal')));
+});
+document.querySelectorAll('.modal').forEach(modal=>{
+  modal.addEventListener('click',e=>{if(e.target===modal)closeInfoModal(modal)});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal.show').forEach(closeInfoModal);
+});
+
+loadState();
+let pollTimer=setInterval(loadState,5000);
+window.addEventListener('focus',loadState);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadState()});
+
+if('serviceWorker'in navigator){
+  window.addEventListener('load',async()=>{
+    try{
+      const registration=await navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'});
+      await registration.update();
+    }catch(e){console.warn(e)}
+  });
+}
+</script>
 </body>
 </html>
