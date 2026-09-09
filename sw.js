@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-main-v4.3-starsoul-upgrade-home';
+const CACHE_NAME = 'lemon-main-v4.4-member-modal-transparent-close';
 const APP_SHELL = [
   '/',
   '/index.html',
