@@ -437,7 +437,7 @@
   </div>
 </div>
 
-<div id="site-version">main_v4.6</div>
+<div id="site-version">main_v4.7</div>
 
 <script>
 const API='/api/guild-state';
@@ -510,7 +510,14 @@ function renderMemberSelect(){
   }).join('');
   if(members.some(m=>m.id===current))memberSelect.value=current;
 }
-function updateFormForMember(){
+function captureBirthdayDraft(){
+  return {
+    memberId:memberSelect.value,
+    month:monthSelect.value,
+    day:daySelect.value
+  };
+}
+function updateFormForMember(draft=null){
   const member=members.find(m=>m.id===memberSelect.value);
   if(!member){
     monthSelect.value='';fillDays();daySelect.value='';
@@ -518,14 +525,25 @@ function updateFormForMember(){
     birthStatus.textContent='길드원 본인이 직접 참여해 주세요.';
     return;
   }
+
   const b=parseBirthday(memberBirthdays[member.id]);
-  if(b){
+  const keepDraft=!!(draft&&draft.memberId===member.id&&(draft.month||draft.day));
+
+  if(keepDraft){
+    monthSelect.value=draft.month||'';
+    fillDays();
+    if(draft.day)daySelect.value=draft.day;
+  }else if(b){
     monthSelect.value=String(b.month);fillDays();daySelect.value=String(b.day);
+  }else{
+    monthSelect.value='';fillDays();daySelect.value='';
+  }
+
+  if(b){
     const z=zodiacFor(b.month,b.day);
     birthSave.textContent='✨ 내 별자리 수정하기';
     birthStatus.textContent=`${member.name}님은 ${z?z.symbol+' '+z.name:'별자리'}로 등록되어 있어요.`;
   }else{
-    monthSelect.value='';fillDays();daySelect.value='';
     birthSave.textContent='🌟 내 별자리 등록하기';
     birthStatus.textContent=`${member.name}님의 생일 월·일을 선택해주세요.`;
   }
@@ -610,8 +628,8 @@ function localSave(){
   localStorage.setItem('guild_members',JSON.stringify(members));
   localStorage.setItem('guild_member_birthdays',JSON.stringify(memberBirthdays));
 }
-function renderAll(){
-  renderMemberSelect();renderParticipation();renderZodiac();updateFormForMember();
+function renderAll(draft=null){
+  renderMemberSelect();renderParticipation();renderZodiac();updateFormForMember(draft);
 }
 async function loadState(){
   try{
@@ -625,12 +643,14 @@ async function loadState(){
       members=JSON.parse(localStorage.getItem('guild_members')||'[]');
       memberBirthdays=JSON.parse(localStorage.getItem('guild_member_birthdays')||'{}');
     }
-    localSave();renderAll();
+    const draft=captureBirthdayDraft();
+    localSave();renderAll(draft);
   }catch(e){
     console.warn('길드 상태 조회 실패',e);
+    const draft=captureBirthdayDraft();
     members=JSON.parse(localStorage.getItem('guild_members')||'[]');
     memberBirthdays=JSON.parse(localStorage.getItem('guild_member_birthdays')||'{}');
-    renderAll();
+    renderAll(draft);
     birthStatus.textContent='온라인 동기화를 불러오지 못해 기기 저장 정보를 표시하고 있어요.';
   }
 }

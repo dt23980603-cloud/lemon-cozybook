@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-main-v4.6-member-flower-effective-score';
+const CACHE_NAME = 'lemon-main-v4.7-birthday-form-draft';
 const APP_SHELL = [
   '/',
   '/index.html',
