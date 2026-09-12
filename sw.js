@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lemon-main-v4.7-birthday-form-draft';
+const CACHE_NAME = 'lemon-main-v4.10-menu-background';
 const APP_SHELL = [
   '/',
   '/index.html',
