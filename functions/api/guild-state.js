@@ -3,6 +3,13 @@ const JSON_HEADERS = {
   'cache-control': 'no-store'
 };
 
+function forbidden(message = '본인의 정보만 수정할 수 있습니다.') {
+  return new Response(JSON.stringify({ error: message, code: 'MEMBER_SCOPE_REQUIRED' }), {
+    status: 403,
+    headers: JSON_HEADERS
+  });
+}
+
 async function ensureTable(db) {
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS guild_state (
@@ -62,7 +69,7 @@ export async function onRequestGet(context) {
 
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
   let current = await readCurrentState(env.DB, stateId);
 
   // 데모 상태가 아직 없으면 운영(main) 상태를 1회 복제해 시작합니다.
@@ -123,7 +130,7 @@ export async function onRequestPut(context) {
 
   await ensureTable(env.DB);
   const url = new URL(context.request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
   const current = await readCurrentState(env.DB, stateId);
   const mergedState = { ...current.state, ...patch };
   const updatedAt = Date.now();
@@ -135,6 +142,26 @@ export async function onRequestPut(context) {
       state_json = excluded.state_json,
       updated_at = excluded.updated_at
   `).bind(stateId, JSON.stringify(mergedState), updatedAt).run();
+
+  // 길드원 삭제 후 로그인 가능한 고아 계정이 남지 않도록 즉시 비활성화합니다.
+  if (Array.isArray(patch.members)) {
+    try {
+      const activeMemberIds = patch.members
+        .map(member => String(member?.id || ''))
+        .filter(Boolean);
+      const placeholders = activeMemberIds.map((_, index) => `?${index + 2}`).join(', ');
+      const sql = activeMemberIds.length
+        ? `UPDATE auth_accounts SET status = 'inactive', updated_at = ?1 WHERE member_id NOT IN (${placeholders})`
+        : `UPDATE auth_accounts SET status = 'inactive', updated_at = ?1`;
+      await env.DB.prepare(sql).bind(updatedAt, ...activeMemberIds).run();
+      await env.DB.prepare(`
+        DELETE FROM auth_sessions
+        WHERE account_id IN (SELECT account_id FROM auth_accounts WHERE status <> 'active')
+      `).run();
+    } catch (_) {
+      // 인증 테이블이 아직 만들어지기 전의 기존 길드원 관리도 정상 작동해야 합니다.
+    }
+  }
 
   return new Response(JSON.stringify({
     ok: true,
@@ -175,6 +202,11 @@ function isValidOptionChange(change) {
 function jsonPathForOptionKey(key) {
   const escaped = key.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   return `$.flowerOptions."${escaped}"`;
+}
+
+function memberIdFromScopedKey(key) {
+  const marker = String(key || '').lastIndexOf('::');
+  return marker >= 0 ? String(key).slice(marker + 2) : '';
 }
 
 function isValidMissionChange(change) {
@@ -267,9 +299,20 @@ export async function onRequestPatch(context) {
     });
   }
 
+  const auth = context.data?.auth;
+  if (!auth) return forbidden('로그인이 필요합니다.');
+  if (auth.role !== 'admin') {
+    const ownMemberId = String(auth.memberId || '');
+    const outsideScope = changes.some(change => memberIdFromScopedKey(change.key) !== ownMemberId) ||
+      optionChanges.some(change => memberIdFromScopedKey(change.key) !== ownMemberId) ||
+      missionChanges.some(change => change.memberId !== ownMemberId) ||
+      birthdayChanges.some(change => change.memberId !== ownMemberId);
+    if (outsideScope) return forbidden();
+  }
+
   await ensureTable(env.DB);
   const url = new URL(request.url);
-  const stateId = url.searchParams.get('mode') === 'demo' ? 'demo' : 'main';
+  const stateId = 'main';
 
   // Keep the demo seed behavior even if PATCH is the first request.
   if (stateId === 'demo') {
