@@ -3,6 +3,7 @@ import {
   guildStateUpsert,
   hasDuplicateMemberName,
   normalizeGuildRole,
+  normalizeJoinedAt,
   normalizeMemberName,
   publicMember,
   readGuildState,
@@ -16,6 +17,7 @@ export async function onRequestPatch(context) {
   try { body = await context.request.json(); } catch (_) { return json({ error: '길드원 정보를 확인해주세요.' }, 400); }
   const memberName = normalizeMemberName(body?.memberName);
   const memberRole = normalizeGuildRole(body?.memberRole);
+  const memberJoinedAt = normalizeJoinedAt(body?.memberJoinedAt);
   if (!memberName) return json({ error: '길드원 닉네임을 입력해주세요.' }, 400);
 
   const state = await readGuildState(context.env.DB);
@@ -23,7 +25,7 @@ export async function onRequestPatch(context) {
   const existing = members.find(member => member.id === memberId);
   if (!existing) return json({ error: '길드원을 찾을 수 없습니다.' }, 404);
   if (hasDuplicateMemberName(members, memberName, memberId)) return json({ error: '이미 사용 중인 길드원 닉네임입니다.' }, 409);
-  const updatedMember = { ...existing, name: memberName, role: memberRole };
+  const updatedMember = { ...existing, name: memberName, role: memberRole, joinedAt: memberJoinedAt };
   const nextState = {
     ...state,
     members: members.map(member => member.id === memberId ? updatedMember : member)
@@ -69,5 +71,12 @@ export async function onRequestDelete(context) {
     );
   }
   await context.env.DB.batch(statements);
+  for (const table of ['guild_management_daily', 'guild_management_weekly', 'guild_management_week_ranges', 'guild_management_attendance']) {
+    try {
+      await context.env.DB.prepare(`DELETE FROM ${table} WHERE member_id = ?1`).bind(memberId).run();
+    } catch (_) {
+      // 길드원 관리 기능을 아직 한 번도 열지 않아 테이블이 없는 경우는 무시합니다.
+    }
+  }
   return json({ ok: true, deleted: true, memberId, memberName: member.name });
 }

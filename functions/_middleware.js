@@ -34,6 +34,10 @@ const ADMIN_PAGES = new Set([
   '/admin-accounts.html'
 ]);
 
+const GUILD_MANAGER_PAGES = new Set([
+  '/guild-management.html'
+]);
+
 function isAdminMutation(pathname, method) {
   if (method === 'GET' || method === 'HEAD') return false;
   if (pathname === '/api/flowers') return true;
@@ -48,7 +52,7 @@ function isAdminMutation(pathname, method) {
 
 function normalizePagePath(pathname) {
   if (pathname === '/' || pathname === '/index' || pathname === '/index.html') return '/index.html';
-  if (/^\/(?:login|auth-setup|change-pin|admin-accounts|page(?:[1-9]|10))$/.test(pathname)) {
+  if (/^\/(?:login|auth-setup|change-pin|admin-accounts|guild-management|page(?:[1-9]|10))$/.test(pathname)) {
     return `${pathname}.html`;
   }
   return pathname;
@@ -108,6 +112,10 @@ export async function onRequest(context) {
   }
 
   if (ADMIN_PAGES.has(pathname) && auth.role !== 'admin') {
+    return Response.redirect(new URL('/', request.url).toString(), 302);
+  }
+
+  if (GUILD_MANAGER_PAGES.has(pathname) && auth.role !== 'admin' && auth.role !== 'subadmin') {
     return Response.redirect(new URL('/', request.url).toString(), 302);
   }
 

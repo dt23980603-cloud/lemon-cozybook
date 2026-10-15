@@ -2,6 +2,7 @@ import {
   ensureAuthTables,
   hashPin,
   json,
+  normalizeAccessRole,
   publicAccount,
   randomPin,
   requireAdmin,
@@ -11,6 +12,7 @@ import {
   guildStateUpsert,
   hasDuplicateMemberName,
   normalizeGuildRole,
+  normalizeJoinedAt,
   normalizeMemberName,
   publicMember,
   readGuildState
@@ -28,7 +30,7 @@ export async function onRequestGet(context) {
     FROM auth_accounts AS a
     LEFT JOIN auth_sessions AS s ON s.account_id = a.account_id AND s.expires_at > ?1
     GROUP BY a.account_id
-    ORDER BY CASE WHEN a.role = 'admin' THEN 0 ELSE 1 END, a.created_at ASC
+    ORDER BY CASE a.role WHEN 'admin' THEN 0 WHEN 'subadmin' THEN 1 ELSE 2 END, a.created_at ASC
   `).bind(Date.now()).all();
   const accounts = (result.results || []).map(row => ({
     ...publicAccount(row, members),
@@ -55,6 +57,7 @@ export async function onRequestPost(context) {
   const members = Array.isArray(state.members) ? state.members.map(publicMember).filter(member => member.id) : [];
   const createNewMember = body?.createNewMember === true;
   const requestedRole = normalizeGuildRole(body?.memberRole);
+  const requestedJoinedAt = normalizeJoinedAt(body?.memberJoinedAt);
   let member;
   let nextMembers = members;
 
@@ -62,13 +65,13 @@ export async function onRequestPost(context) {
     const memberName = normalizeMemberName(body?.memberName);
     if (!memberName) return json({ error: '새 길드원의 닉네임을 입력해주세요.' }, 400);
     if (hasDuplicateMemberName(members, memberName)) return json({ error: '이미 사용 중인 길드원 닉네임입니다.' }, 409);
-    member = { id: `m_${crypto.randomUUID()}`, name: memberName, role: requestedRole };
+    member = { id: `m_${crypto.randomUUID()}`, name: memberName, role: requestedRole, joinedAt: requestedJoinedAt };
     nextMembers = [...members, member];
   } else {
     const memberId = String(body?.memberId || '');
     const found = members.find(item => item.id === memberId);
     if (!found) return json({ error: '계정을 발급할 기존 길드원을 선택해주세요.' }, 400);
-    member = { ...found, role: requestedRole };
+    member = { ...found, role: requestedRole, joinedAt: requestedJoinedAt || found.joinedAt || '' };
     nextMembers = members.map(item => item.id === memberId ? member : item);
   }
 
@@ -80,7 +83,7 @@ export async function onRequestPost(context) {
   const temporaryPin = randomPin();
   const pin = await hashPin(temporaryPin);
   const accountId = crypto.randomUUID();
-  const accessRole = body?.role === 'admin' ? 'admin' : 'member';
+  const accessRole = normalizeAccessRole(body?.role);
   const now = Date.now();
   const nextState = { ...state, members: nextMembers };
   await context.env.DB.batch([
